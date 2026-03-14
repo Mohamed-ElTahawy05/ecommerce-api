@@ -58,14 +58,12 @@
 
       <!-- SIDEBAR -->
       <aside class="w-full lg:w-64 flex-shrink-0">
-        <!-- Mobile filter toggle -->
         <button id="filter-toggle" class="lg:hidden w-full flex items-center justify-between px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-sm font-medium mb-4">
           <span><i class="fa-solid fa-sliders mr-2"></i>Filters</span>
           <i class="fa-solid fa-chevron-down text-xs" id="filter-chevron"></i>
         </button>
 
         <div id="filter-panel" class="hidden lg:block space-y-6">
-          <!-- Categories -->
           <div class="rounded-2xl bg-white/5 border border-white/10 p-5">
             <h3 class="font-semibold text-sm mb-4 flex items-center gap-2">
               <i class="fa-solid fa-tag text-indigo-400"></i> Categories
@@ -78,22 +76,20 @@
             </div>
           </div>
 
-          <!-- Price Range -->
           <div class="rounded-2xl bg-white/5 border border-white/10 p-5">
             <h3 class="font-semibold text-sm mb-4 flex items-center gap-2">
               <i class="fa-solid fa-dollar-sign text-indigo-400"></i> Price Range
             </h3>
             <div class="space-y-3">
-              <input type="range" id="price-range" min="0" max="1000" value="1000" class="w-full" />
+              <input type="range" id="price-range" min="0" max="2500" value="2500" class="w-full" />
               <div class="flex justify-between text-xs text-white/50">
                 <span>$0</span>
-                <span id="price-display" class="text-indigo-400 font-medium">Up to $1000</span>
-                <span>$1000+</span>
+                <span id="price-display" class="text-indigo-400 font-medium">Up to $2500</span>
+                <span>$2500+</span>
               </div>
             </div>
           </div>
 
-          <!-- Stock -->
           <div class="rounded-2xl bg-white/5 border border-white/10 p-5">
             <h3 class="font-semibold text-sm mb-4 flex items-center gap-2">
               <i class="fa-solid fa-boxes-stacked text-indigo-400"></i> Availability
@@ -115,7 +111,6 @@
 
       <!-- PRODUCTS AREA -->
       <div class="flex-1 min-w-0">
-        <!-- Top Bar -->
         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
           <div class="flex items-center gap-3 flex-1 w-full sm:w-auto">
             <div class="relative flex-1 sm:w-72">
@@ -133,18 +128,12 @@
           </div>
         </div>
 
-        <!-- Results info -->
         <div class="flex items-center justify-between mb-5">
           <p id="results-count" class="text-sm text-white/40"><span class="text-white font-semibold">—</span> products found</p>
         </div>
 
-        <!-- Products Grid -->
-        <div id="products-grid" class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
-          <!-- Skeletons -->
-          ${Array(8).fill('<div class="skeleton aspect-[3/4] rounded-2xl"></div>').join('')}
-        </div>
+        <div id="products-grid" class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4"></div>
 
-        <!-- Empty State -->
         <div id="empty-state" class="hidden text-center py-20">
           <div class="w-20 h-20 mx-auto mb-5 rounded-full bg-white/5 flex items-center justify-center">
             <i class="fa-solid fa-box-open text-3xl text-white/20"></i>
@@ -153,7 +142,6 @@
           <p class="text-white/30 text-sm">Try adjusting your filters or search term</p>
         </div>
 
-        <!-- Pagination -->
         <div id="pagination" class="flex items-center justify-center gap-2 mt-10"></div>
       </div>
     </div>
@@ -197,7 +185,6 @@
     let totalPages = 1;
     let filters = {};
 
-    // Read URL params
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('search')) {
       document.getElementById('search-input').value = urlParams.get('search');
@@ -207,7 +194,6 @@
       filters.category = urlParams.get('category');
     }
 
-    // Load categories
     async function loadCategories() {
       try {
         const cats = await fetchCategories();
@@ -224,19 +210,25 @@
       } catch (e) { console.error(e); }
     }
 
-    // Render products
     async function loadProducts() {
       const grid = document.getElementById('products-grid');
       grid.innerHTML = Array(8).fill('<div class="skeleton aspect-[3/4] rounded-2xl"></div>').join('');
       document.getElementById('empty-state').classList.add('hidden');
 
-      const params = { ...filters, page: currentPage, limit: 12 };
+      const cleanFilters = {};
+      Object.keys(filters).forEach(key => {
+        if (filters[key] !== undefined && filters[key] !== null && filters[key] !== '') {
+          cleanFilters[key] = filters[key];
+        }
+      });
+
+      const params = { ...cleanFilters, page: currentPage, limit: 12 };
+
       try {
         const data = await fetchProducts(params);
-        const products = data.data || data.products || data;
-        const total = data.total || data.count || products.length;
-        const limit = 12;
-        totalPages = Math.ceil(total / limit);
+        const products = data.products || data.data || data;
+        const total = data.total || products.length;
+        totalPages = Math.ceil(total / 12);
 
         document.getElementById('results-count').innerHTML =
           `<span class="text-white font-semibold">${total}</span> products found`;
@@ -282,7 +274,6 @@
       loadProducts();
     }
 
-    // Search
     let searchTimer;
     document.getElementById('search-input').addEventListener('input', e => {
       clearTimeout(searchTimer);
@@ -293,35 +284,38 @@
       }, 400);
     });
 
-    // Sort
     document.getElementById('sort-select').addEventListener('change', e => {
       filters.sort = e.target.value;
       currentPage = 1;
       loadProducts();
     });
 
-    // Price range
     document.getElementById('price-range').addEventListener('input', e => {
       document.getElementById('price-display').textContent = `Up to $${e.target.value}`;
     });
 
-    // Apply filters
     document.getElementById('apply-filters').addEventListener('click', () => {
       const cat = document.querySelector('input[name="category"]:checked')?.value;
       filters.category = cat || undefined;
-      filters.maxPrice = document.getElementById('price-range').value;
+      const maxPrice = document.getElementById('price-range').value;
+      if (parseInt(maxPrice) < 2500) {
+        filters['price[lte]'] = maxPrice;
+      } else {
+        delete filters['price[lte]'];
+      }
+      delete filters.maxPrice;
       const inStock = document.getElementById('in-stock-only').checked;
-      if (inStock) filters.stock = 'true';
-      else delete filters.stock;
+      if (inStock) filters['stock[gt]'] = 0;
+      else delete filters['stock[gt]'];
+      delete filters.stock;
       currentPage = 1;
       loadProducts();
     });
 
-    // Clear filters
     document.getElementById('clear-filters').addEventListener('click', () => {
       document.querySelector('input[name="category"][value=""]').checked = true;
-      document.getElementById('price-range').value = 1000;
-      document.getElementById('price-display').textContent = 'Up to $1000';
+      document.getElementById('price-range').value = 2500;
+      document.getElementById('price-display').textContent = 'Up to $2500';
       document.getElementById('in-stock-only').checked = false;
       document.getElementById('search-input').value = '';
       filters = {};
@@ -336,4 +330,4 @@
     });
   </script>
 </body>
-</html>
+</html> 
