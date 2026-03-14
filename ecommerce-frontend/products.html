@@ -227,8 +227,8 @@
       try {
         const data = await fetchProducts(params);
         const products = data.products || data.data || data;
-        const total = data.total || products.length;
-        totalPages = Math.ceil(total / 12);
+        const total = data.count || products.length;
+        totalPages = data.pages || Math.ceil(total / 12);
 
         document.getElementById('results-count').innerHTML =
           `<span class="text-white font-semibold">${total}</span> products found`;
