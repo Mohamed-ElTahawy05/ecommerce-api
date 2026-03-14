@@ -125,6 +125,9 @@ function requireAdmin() {
 function getImageUrl(filename) {
   if (!filename) return 'https://via.placeholder.com/500x500/1a1a2e/6366f1?text=No+Image';
   if (filename.startsWith('http')) return filename;
+  if (filename.includes('/')) {
+    return `https://res.cloudinary.com/dc04kn6vh/image/upload/${filename}`;
+  }
   return `https://ecommerce-api-psi-three.vercel.app/uploads/${filename}`;
 }
 

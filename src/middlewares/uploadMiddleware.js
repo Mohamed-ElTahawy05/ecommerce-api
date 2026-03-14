@@ -1,31 +1,25 @@
 const multer = require('multer');
-const path = require('path');
-const crypto = require('crypto');
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+const cloudinary = require('cloudinary').v2;
 
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'uploads/');
-    },
-    filename: (req, file, cb) => {
-        const ext = path.extname(file.originalname);
-        const uniqueName = crypto.randomBytes(16).toString('hex');
-        cb(null, `${uniqueName}${ext}`);
-    }
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
-const fileFilter = (req, file, cb) => {
-    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
-    if (allowedTypes.includes(file.mimetype)) {
-        cb(null, true);
-    } else {
-        cb(new Error('Only images are allowed (jpeg, png, webp)'), false);
+const storage = new CloudinaryStorage({
+    cloudinary,
+    params: {
+        folder: 'ecommerce',
+        allowed_formats: ['jpg', 'jpeg', 'png', 'webp'],
+        transformation: [{ width: 800, height: 800, crop: 'limit' }]
     }
-};
+});
 
 const upload = multer({
     storage,
-    fileFilter,
-    limits: { fileSize: 2 * 1024 * 1024 }
+    limits: { fileSize: 2 * 1024 * 1024 } 
 });
 
-module.exports = upload;
+module.exports = upload; 
