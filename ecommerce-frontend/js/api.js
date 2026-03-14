@@ -3,6 +3,13 @@ const API_BASE = 'https://ecommerce-api-psi-three.vercel.app/api';
 
 const api = axios.create({
   baseURL: API_BASE,
+  paramsSerializer: (params) => {
+    // Build query string manually so bracket keys like price[lte] are NOT percent-encoded
+    return Object.entries(params)
+      .filter(([, v]) => v !== undefined && v !== null && v !== '')
+      .map(([k, v]) => `${k}=${encodeURIComponent(v)}`)
+      .join('&');
+  },
 });
 
 // Request interceptor: attach JWT token

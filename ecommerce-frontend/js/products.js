@@ -1,8 +1,7 @@
 // ─── Products Module ──────────────────────────────────────────────────────────
 
 async function fetchProducts(params = {}) {
-  const query = new URLSearchParams(params).toString();
-  const res = await api.get(`/products?${query}`);
+  const res = await api.get('/products', { params });
   return res.data;
 }
 
