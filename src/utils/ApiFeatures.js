@@ -6,7 +6,21 @@ class ApiFeatures {
 
     // فلتر
     filter() {
-        const queryObj = { ...this.queryString };
+        const queryObj = {};
+        
+        // Handle flat bracket notation (e.g., from Vercel's query parser)
+        for (const [key, value] of Object.entries(this.queryString)) {
+            const match = key.match(/^([^\[]+)\[([^\]]+)\]$/);
+            if (match) {
+                const field = match[1];
+                const op = match[2];
+                if (!queryObj[field]) queryObj[field] = {};
+                queryObj[field][op] = value;
+            } else {
+                queryObj[key] = value;
+            }
+        }
+
         const excludedFields = ['page', 'limit', 'sort', 'fields', 'search'];
         excludedFields.forEach(field => delete queryObj[field]);
 
