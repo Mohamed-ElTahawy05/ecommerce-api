@@ -223,11 +223,13 @@
       });
 
       const params = { ...cleanFilters, page: currentPage, limit: 12 };
+      console.log('Fetching with params:', params);
 
       try {
         const data = await fetchProducts(params);
-        const products = data.products || data.data || data;
-        const total = data.count || products.length;
+        console.log('API response:', data);
+        const products = data.products || data.data || [];
+        const total = data.total || data.count || products.length;
         totalPages = data.pages || Math.ceil(total / 12);
 
         document.getElementById('results-count').innerHTML =
