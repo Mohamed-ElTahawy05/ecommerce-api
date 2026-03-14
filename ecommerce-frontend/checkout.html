@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Checkout — ShopLux</title>
+  <meta name="description" content="Complete your order. Secure checkout with fast delivery." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config={theme:{extend:{colors:{primary:'#6366f1'},fontFamily:{sans:['Inter','sans-serif']}}}}</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="css/custom.css" />
+</head>
+<body class="bg-[#0a0a0a] text-white min-h-screen">
+
+  <!-- NAVBAR -->
+  <header class="navbar-blur fixed top-0 left-0 right-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <a href="index.html" class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/30">
+            <i class="fa-solid fa-bolt text-sm text-white"></i>
+          </div>
+          <span class="text-lg font-bold tracking-tight">Shop<span class="text-indigo-400">Lux</span></span>
+        </a>
+        <div class="flex items-center gap-2 text-sm text-white/40">
+          <i class="fa-solid fa-lock text-xs"></i> Secure Checkout
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- BREADCRUMB -->
+  <div class="pt-24 pb-4 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <nav class="flex items-center gap-2 text-sm text-white/40">
+      <a href="cart.html" class="hover:text-white transition-colors">Cart</a>
+      <i class="fa-solid fa-chevron-right text-xs"></i>
+      <span class="text-white/70">Checkout</span>
+    </nav>
+  </div>
+
+  <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+    <h1 class="text-4xl font-black mb-8">Checkout</h1>
+
+    <div class="flex flex-col lg:flex-row gap-8">
+      <!-- Shipping Form -->
+      <div class="flex-1">
+        <div class="rounded-2xl bg-white/5 border border-white/10 p-6">
+          <h2 class="font-bold text-lg mb-6 flex items-center gap-2">
+            <i class="fa-solid fa-location-dot text-indigo-400"></i> Shipping Address
+          </h2>
+          <form id="checkout-form" class="space-y-4">
+            <div>
+              <label class="block text-xs font-semibold text-white/50 uppercase tracking-wider mb-2">Full Name</label>
+              <input id="ship-name" type="text" placeholder="John Doe" required
+                class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/15 focus:border-indigo-500 outline-none text-sm placeholder-white/30 input-glow transition-all" />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-white/50 uppercase tracking-wider mb-2">Street Address</label>
+              <input id="ship-street" type="text" placeholder="123 Main Street" required
+                class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/15 focus:border-indigo-500 outline-none text-sm placeholder-white/30 input-glow transition-all" />
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-white/50 uppercase tracking-wider mb-2">City</label>
+                <input id="ship-city" type="text" placeholder="New York" required
+                  class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/15 focus:border-indigo-500 outline-none text-sm placeholder-white/30 input-glow transition-all" />
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-white/50 uppercase tracking-wider mb-2">Zip Code</label>
+                <input id="ship-zip" type="text" placeholder="10001" required
+                  class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/15 focus:border-indigo-500 outline-none text-sm placeholder-white/30 input-glow transition-all" />
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-white/50 uppercase tracking-wider mb-2">Country</label>
+              <input id="ship-country" type="text" placeholder="United States" required
+                class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/15 focus:border-indigo-500 outline-none text-sm placeholder-white/30 input-glow transition-all" />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-white/50 uppercase tracking-wider mb-2">Phone (Optional)</label>
+              <input id="ship-phone" type="tel" placeholder="+1 (555) 000-0000"
+                class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/15 focus:border-indigo-500 outline-none text-sm placeholder-white/30 input-glow transition-all" />
+            </div>
+          </form>
+        </div>
+
+        <!-- Payment Method (UI only) -->
+        <div class="rounded-2xl bg-white/5 border border-white/10 p-6 mt-4">
+          <h2 class="font-bold text-lg mb-5 flex items-center gap-2">
+            <i class="fa-solid fa-credit-card text-indigo-400"></i> Payment Method
+          </h2>
+          <div class="flex items-center gap-3 px-4 py-3 rounded-xl bg-indigo-600/10 border border-indigo-500/30">
+            <input type="radio" checked class="accent-indigo-500" id="cod" />
+            <label for="cod" class="text-sm font-medium cursor-pointer">Cash on Delivery</label>
+            <span class="ml-auto text-xs text-white/40 border border-white/15 px-2 py-0.5 rounded-full">Available</span>
+          </div>
+          <p class="text-xs text-white/30 mt-3 flex items-center gap-1.5">
+            <i class="fa-solid fa-shield-halved text-green-400"></i>
+            Your order is protected by our secure checkout system
+          </p>
+        </div>
+      </div>
+
+      <!-- Order Summary -->
+      <div class="w-full lg:w-80 flex-shrink-0">
+        <div class="rounded-2xl bg-white/5 border border-white/10 p-6 lg:sticky lg:top-24">
+          <h2 class="font-bold text-lg mb-5">Order Summary</h2>
+          <div id="checkout-summary" class="space-y-3 mb-5 max-h-60 overflow-y-auto pr-1">
+            <div class="skeleton h-14 rounded-xl"></div>
+          </div>
+          <div id="checkout-totals" class="space-y-2 text-sm border-t border-white/10 pt-4"></div>
+          <button id="place-order-btn" class="mt-6 w-full flex items-center justify-center gap-3 px-6 py-4 bg-indigo-600 hover:bg-indigo-500 rounded-2xl font-bold text-sm transition-all shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/40 hover:-translate-y-0.5">
+            <i class="fa-solid fa-check-circle"></i> Place Order
+          </button>
+          <p class="text-center text-xs text-white/30 mt-3">
+            By placing your order, you agree to our <a href="#" class="text-indigo-400 hover:underline">Terms</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/cart.js"></script>
+  <script>
+    window.addEventListener('DOMContentLoaded', async () => {
+      if (!requireAuth()) return;
+
+      // Load cart summary
+      try {
+        const cart = await getCart();
+        const items = cart.items || [];
+        if (items.length === 0) {
+          showToast('Your cart is empty!', 'warning');
+          setTimeout(() => { window.location.href = 'cart.html'; }, 1500);
+          return;
+        }
+
+        let subtotal = 0;
+        const summaryEl = document.getElementById('checkout-summary');
+        summaryEl.innerHTML = items.map(item => {
+          const price = item.product?.price || 0;
+          subtotal += price * item.quantity;
+          return `
+            <div class="flex items-center gap-3">
+              <img src="${getImageUrl(item.product?.image)}" class="w-12 h-12 rounded-xl object-cover flex-shrink-0" />
+              <div class="flex-1 min-w-0">
+                <p class="text-sm font-medium truncate">${item.product?.name}</p>
+                <p class="text-xs text-white/40">Qty: ${item.quantity}</p>
+              </div>
+              <span class="text-sm font-bold text-indigo-400">${formatPrice(price * item.quantity)}</span>
+            </div>`;
+        }).join('');
+
+        document.getElementById('checkout-totals').innerHTML = `
+          <div class="flex justify-between text-white/60"><span>Subtotal</span><span>${formatPrice(subtotal)}</span></div>
+          <div class="flex justify-between text-white/60"><span>Shipping</span><span class="text-green-400">Free</span></div>
+          <div class="flex justify-between text-white/60"><span>Tax</span><span>$0.00</span></div>
+          <hr class="border-white/10 my-2">
+          <div class="flex justify-between font-bold text-base"><span>Total</span><span class="text-indigo-400">${formatPrice(subtotal)}</span></div>`;
+
+        // Pre-fill user name
+        const user = getUser();
+        if (user?.name) document.getElementById('ship-name').value = user.name;
+      } catch (e) {
+        console.error(e);
+      }
+
+      // Place order
+      document.getElementById('place-order-btn').addEventListener('click', async () => {
+        const name = document.getElementById('ship-name').value.trim();
+        const street = document.getElementById('ship-street').value.trim();
+        const city = document.getElementById('ship-city').value.trim();
+        const zip = document.getElementById('ship-zip').value.trim();
+        const country = document.getElementById('ship-country').value.trim();
+
+        if (!name || !street || !city || !zip || !country) {
+          showToast('Please fill in all required fields', 'error');
+          return;
+        }
+
+        const btn = document.getElementById('place-order-btn');
+        btn.innerHTML = '<i class="fa-solid fa-spinner animate-spin"></i> Placing Order...';
+        btn.disabled = true;
+
+        try {
+          const shippingAddress = `${name}, ${street}, ${city}, ${zip}, ${country}`;
+          await api.post('/orders', { shippingAddress });
+          showToast('Order placed successfully! 🎉', 'success');
+          setTimeout(() => { window.location.href = 'profile.html'; }, 2000);
+        } catch (err) {
+          showToast(err.response?.data?.message || 'Failed to place order', 'error');
+          btn.innerHTML = '<i class="fa-solid fa-check-circle"></i> Place Order';
+          btn.disabled = false;
+        }
+      });
+    });
+  </script>
+</body>
+</html>

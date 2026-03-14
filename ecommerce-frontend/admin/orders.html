@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Orders — Admin — ShopLux</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config={theme:{extend:{colors:{primary:'#6366f1'},fontFamily:{sans:['Inter','sans-serif']}}}}</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="../css/custom.css" />
+</head>
+<body class="bg-[#0a0a0a] text-white min-h-screen flex">
+
+  <!-- SIDEBAR -->
+  <aside class="w-64 flex-shrink-0 h-screen sticky top-0 border-r border-white/10 flex flex-col p-5">
+    <a href="../index.html" class="flex items-center gap-2.5 mb-8">
+      <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/30">
+        <i class="fa-solid fa-bolt text-sm text-white"></i>
+      </div>
+      <span class="text-lg font-bold">Shop<span class="text-indigo-400">Lux</span></span>
+    </a>
+    <div class="flex items-center gap-2 px-3 py-2 rounded-xl bg-indigo-600/10 border border-indigo-500/20 mb-6">
+      <i class="fa-solid fa-shield-halved text-indigo-400 text-sm"></i>
+      <span class="text-xs font-semibold text-indigo-300 uppercase tracking-wider">Admin Panel</span>
+    </div>
+    <nav class="space-y-1 flex-1">
+      <a href="index.html" class="admin-sidebar-link"><i class="fa-solid fa-chart-line w-4"></i> Dashboard</a>
+      <a href="products.html" class="admin-sidebar-link"><i class="fa-solid fa-box w-4"></i> Products</a>
+      <a href="orders.html" class="admin-sidebar-link active"><i class="fa-solid fa-receipt w-4"></i> Orders</a>
+      <a href="categories.html" class="admin-sidebar-link"><i class="fa-solid fa-tag w-4"></i> Categories</a>
+    </nav>
+    <div class="mt-auto pt-4 border-t border-white/10 space-y-1">
+      <a href="../index.html" class="admin-sidebar-link"><i class="fa-solid fa-store w-4"></i> View Store</a>
+      <button onclick="logout()" class="admin-sidebar-link text-red-400 hover:text-red-300 w-full text-left"><i class="fa-solid fa-right-from-bracket w-4"></i> Logout</button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="flex-1 overflow-auto">
+    <header class="sticky top-0 z-10 bg-[#0a0a0a]/80 backdrop-blur border-b border-white/10 px-8 py-4 flex items-center justify-between">
+      <div>
+        <h1 class="text-xl font-bold">Orders</h1>
+        <p class="text-xs text-white/40">Manage all customer orders</p>
+      </div>
+      <!-- Filter by status -->
+      <select id="status-filter" class="px-4 py-2.5 rounded-xl bg-white/5 border border-white/15 outline-none text-sm text-white/70">
+        <option value="">All Statuses</option>
+        <option value="pending">Pending</option>
+        <option value="processing">Processing</option>
+        <option value="shipped">Shipped</option>
+        <option value="delivered">Delivered</option>
+        <option value="cancelled">Cancelled</option>
+      </select>
+    </header>
+
+    <div class="p-8">
+      <div class="rounded-2xl bg-white/5 border border-white/10 overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full min-w-[700px] admin-table">
+            <thead>
+              <tr>
+                <th>Order ID</th>
+                <th>Customer</th>
+                <th>Items</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th>Date</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="orders-body">
+              <tr><td colspan="7" class="text-center py-8 text-white/30"><i class="fa-solid fa-spinner animate-spin mr-2"></i>Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/admin.js"></script>
+  <script>
+    let allOrders = [];
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      if (!requireAdmin()) return;
+      await loadOrders();
+    });
+
+    document.getElementById('status-filter').addEventListener('change', () => {
+      const filter = document.getElementById('status-filter').value.toLowerCase();
+      const filtered = filter ? allOrders.filter(o => o.status?.toLowerCase() === filter) : allOrders;
+      renderOrders(filtered);
+    });
+
+    async function loadOrders() {
+      try {
+        allOrders = await adminGetOrders();
+        renderOrders(allOrders);
+      } catch (e) {
+        document.getElementById('orders-body').innerHTML =
+          '<tr><td colspan="7" class="text-center py-8 text-red-400">Failed to load orders</td></tr>';
+      }
+    }
+
+    function renderOrders(orders) {
+      const tbody = document.getElementById('orders-body');
+      if (!orders.length) {
+        tbody.innerHTML = '<tr><td colspan="7" class="text-center py-8 text-white/30">No orders found</td></tr>';
+        return;
+      }
+      tbody.innerHTML = orders.map(order => {
+        const date = new Date(order.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        return `<tr>
+          <td class="font-mono text-xs text-indigo-400">#${order._id?.slice(-8).toUpperCase()}</td>
+          <td>${order.user?.name || 'N/A'}</td>
+          <td class="text-white/50">${order.orderItems?.length || order.items?.length || 0} item(s)</td>
+          <td class="font-bold">${formatPrice(order.totalPrice || 0)}</td>
+          <td>${statusBadge(order.status)}</td>
+          <td class="text-white/40 text-xs">${date}</td>
+          <td>
+            <select onchange="updateOrderStatus('${order._id}', this.value, this)"
+              class="px-2 py-1.5 rounded-lg bg-white/5 border border-white/15 outline-none text-xs text-white/70 cursor-pointer focus:border-indigo-500">
+              <option value="">Update status</option>
+              <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option>
+              <option value="processing" ${order.status === 'processing' ? 'selected' : ''}>Processing</option>
+              <option value="shipped" ${order.status === 'shipped' ? 'selected' : ''}>Shipped</option>
+              <option value="delivered" ${order.status === 'delivered' ? 'selected' : ''}>Delivered</option>
+              <option value="cancelled" ${order.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
+            </select>
+          </td>
+        </tr>`;
+      }).join('');
+    }
+
+    async function updateOrderStatus(id, status, selectEl) {
+      if (!status) return;
+      try {
+        await adminUpdateOrderStatus(id, status);
+        showToast(`Order status updated to "${status}"`, 'success');
+        // Update local data
+        const order = allOrders.find(o => o._id === id);
+        if (order) order.status = status;
+        // Refresh cells
+        const row = selectEl.closest('tr');
+        const statusCell = row.querySelector('td:nth-child(5)');
+        if (statusCell) statusCell.innerHTML = statusBadge(status);
+      } catch (err) {
+        showToast(err.response?.data?.message || 'Failed to update status', 'error');
+      }
+    }
+  </script>
+</body>
+</html>

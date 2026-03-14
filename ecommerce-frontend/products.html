@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Products — ShopLux</title>
+  <meta name="description" content="Browse our full catalog of premium products. Filter by category, price, and more." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config={theme:{extend:{colors:{primary:'#6366f1'},fontFamily:{sans:['Inter','sans-serif']}}}}</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+  <link rel="stylesheet" href="css/custom.css" />
+</head>
+<body class="bg-[#0a0a0a] text-white min-h-screen">
+
+  <!-- NAVBAR -->
+  <header id="navbar" class="navbar-blur fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <a href="index.html" class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/30">
+            <i class="fa-solid fa-bolt text-sm text-white"></i>
+          </div>
+          <span class="text-lg font-bold tracking-tight">Shop<span class="text-indigo-400">Lux</span></span>
+        </a>
+        <nav class="hidden md:flex items-center gap-1">
+          <a href="index.html" class="px-4 py-2 rounded-xl text-sm text-white/60 hover:text-white hover:bg-white/5 transition-all">Home</a>
+          <a href="products.html" class="px-4 py-2 rounded-xl text-sm text-white font-medium hover:bg-white/5 transition-all">Products</a>
+        </nav>
+        <div class="flex items-center gap-3">
+          <a href="cart.html" class="relative p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition-all group">
+            <i class="fa-solid fa-cart-shopping text-white/70 group-hover:text-white"></i>
+            <span id="cart-count" class="hidden absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-indigo-600 text-xs font-bold flex items-center justify-center">0</span>
+          </a>
+          <div id="nav-auth" class="flex items-center gap-2"></div>
+          <button id="mobile-menu-btn" class="md:hidden p-2.5 rounded-xl bg-white/5 border border-white/10 text-white/70"><i class="fa-solid fa-bars"></i></button>
+        </div>
+      </div>
+      <div id="mobile-menu" class="hidden md:hidden pb-4 border-t border-white/10 mt-2 pt-4 space-y-1">
+        <a href="index.html" class="block px-4 py-2 rounded-xl text-sm text-white/60 hover:text-white hover:bg-white/5">Home</a>
+        <a href="products.html" class="block px-4 py-2 rounded-xl text-sm text-white hover:bg-white/5">Products</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- PAGE HEADER -->
+  <div class="pt-24 pb-8 border-b border-white/10 bg-gradient-to-b from-white/[0.02] to-transparent">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h1 class="text-4xl font-black mb-2">All Products</h1>
+      <p class="text-white/40">Discover our curated collection</p>
+    </div>
+  </div>
+
+  <!-- MAIN LAYOUT -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="flex flex-col lg:flex-row gap-8">
+
+      <!-- SIDEBAR -->
+      <aside class="w-full lg:w-64 flex-shrink-0">
+        <!-- Mobile filter toggle -->
+        <button id="filter-toggle" class="lg:hidden w-full flex items-center justify-between px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-sm font-medium mb-4">
+          <span><i class="fa-solid fa-sliders mr-2"></i>Filters</span>
+          <i class="fa-solid fa-chevron-down text-xs" id="filter-chevron"></i>
+        </button>
+
+        <div id="filter-panel" class="hidden lg:block space-y-6">
+          <!-- Categories -->
+          <div class="rounded-2xl bg-white/5 border border-white/10 p-5">
+            <h3 class="font-semibold text-sm mb-4 flex items-center gap-2">
+              <i class="fa-solid fa-tag text-indigo-400"></i> Categories
+            </h3>
+            <div id="category-filters" class="space-y-2">
+              <label class="flex items-center gap-3 cursor-pointer group">
+                <input type="radio" name="category" value="" checked class="accent-indigo-500 w-4 h-4" />
+                <span class="text-sm text-white/70 group-hover:text-white transition-colors">All Categories</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Price Range -->
+          <div class="rounded-2xl bg-white/5 border border-white/10 p-5">
+            <h3 class="font-semibold text-sm mb-4 flex items-center gap-2">
+              <i class="fa-solid fa-dollar-sign text-indigo-400"></i> Price Range
+            </h3>
+            <div class="space-y-3">
+              <input type="range" id="price-range" min="0" max="1000" value="1000" class="w-full" />
+              <div class="flex justify-between text-xs text-white/50">
+                <span>$0</span>
+                <span id="price-display" class="text-indigo-400 font-medium">Up to $1000</span>
+                <span>$1000+</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Stock -->
+          <div class="rounded-2xl bg-white/5 border border-white/10 p-5">
+            <h3 class="font-semibold text-sm mb-4 flex items-center gap-2">
+              <i class="fa-solid fa-boxes-stacked text-indigo-400"></i> Availability
+            </h3>
+            <label class="flex items-center gap-3 cursor-pointer">
+              <input type="checkbox" id="in-stock-only" class="accent-indigo-500 w-4 h-4" />
+              <span class="text-sm text-white/70">In Stock Only</span>
+            </label>
+          </div>
+
+          <button id="apply-filters" class="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-sm font-semibold transition-all">
+            Apply Filters
+          </button>
+          <button id="clear-filters" class="w-full py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-sm font-medium transition-all text-white/60">
+            Clear Filters
+          </button>
+        </div>
+      </aside>
+
+      <!-- PRODUCTS AREA -->
+      <div class="flex-1 min-w-0">
+        <!-- Top Bar -->
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+          <div class="flex items-center gap-3 flex-1 w-full sm:w-auto">
+            <div class="relative flex-1 sm:w-72">
+              <i class="fa-solid fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-white/30 text-sm"></i>
+              <input id="search-input" type="text" placeholder="Search products..." class="w-full pl-10 pr-4 py-3 rounded-xl bg-white/5 border border-white/15 focus:border-indigo-500 outline-none text-sm placeholder-white/30 input-glow transition-all" />
+            </div>
+          </div>
+          <div class="flex items-center gap-3">
+            <select id="sort-select" class="px-4 py-3 rounded-xl bg-white/5 border border-white/15 focus:border-indigo-500 outline-none text-sm text-white/70 cursor-pointer">
+              <option value="-createdAt">Newest First</option>
+              <option value="price">Price: Low → High</option>
+              <option value="-price">Price: High → Low</option>
+              <option value="name">Name A–Z</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Results info -->
+        <div class="flex items-center justify-between mb-5">
+          <p id="results-count" class="text-sm text-white/40"><span class="text-white font-semibold">—</span> products found</p>
+        </div>
+
+        <!-- Products Grid -->
+        <div id="products-grid" class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
+          <!-- Skeletons -->
+          ${Array(8).fill('<div class="skeleton aspect-[3/4] rounded-2xl"></div>').join('')}
+        </div>
+
+        <!-- Empty State -->
+        <div id="empty-state" class="hidden text-center py-20">
+          <div class="w-20 h-20 mx-auto mb-5 rounded-full bg-white/5 flex items-center justify-center">
+            <i class="fa-solid fa-box-open text-3xl text-white/20"></i>
+          </div>
+          <h3 class="text-lg font-semibold text-white/50 mb-2">No products found</h3>
+          <p class="text-white/30 text-sm">Try adjusting your filters or search term</p>
+        </div>
+
+        <!-- Pagination -->
+        <div id="pagination" class="flex items-center justify-center gap-2 mt-10"></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-white/10 py-8 mt-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <p class="text-white/30 text-sm">© 2024 ShopLux. All rights reserved.</p>
+      <div class="flex items-center gap-4 text-sm text-white/40">
+        <a href="index.html" class="hover:text-white transition-colors">Home</a>
+        <a href="cart.html" class="hover:text-white transition-colors">Cart</a>
+        <a href="profile.html" class="hover:text-white transition-colors">Profile</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/products.js"></script>
+  <script>
+    AOS.init({ duration: 700, once: true });
+
+    document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+      document.getElementById('mobile-menu').classList.toggle('hidden');
+    });
+    document.getElementById('filter-toggle').addEventListener('click', () => {
+      document.getElementById('filter-panel').classList.toggle('hidden');
+      const ch = document.getElementById('filter-chevron');
+      ch.style.transform = ch.style.transform === 'rotate(180deg)' ? '' : 'rotate(180deg)';
+    });
+
+    window.addEventListener('scroll', () => {
+      document.getElementById('navbar').classList.toggle('shadow-2xl', window.scrollY > 20);
+    });
+
+    let currentPage = 1;
+    let totalPages = 1;
+    let filters = {};
+
+    // Read URL params
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('search')) {
+      document.getElementById('search-input').value = urlParams.get('search');
+      filters.search = urlParams.get('search');
+    }
+    if (urlParams.get('category')) {
+      filters.category = urlParams.get('category');
+    }
+
+    // Load categories
+    async function loadCategories() {
+      try {
+        const cats = await fetchCategories();
+        const list = Array.isArray(cats) ? cats : (cats.data || []);
+        const container = document.getElementById('category-filters');
+        list.forEach(cat => {
+          const label = document.createElement('label');
+          label.className = 'flex items-center gap-3 cursor-pointer group';
+          label.innerHTML = `
+            <input type="radio" name="category" value="${cat._id}" class="accent-indigo-500 w-4 h-4" ${filters.category === cat._id ? 'checked' : ''} />
+            <span class="text-sm text-white/70 group-hover:text-white transition-colors">${cat.name}</span>`;
+          container.appendChild(label);
+        });
+      } catch (e) { console.error(e); }
+    }
+
+    // Render products
+    async function loadProducts() {
+      const grid = document.getElementById('products-grid');
+      grid.innerHTML = Array(8).fill('<div class="skeleton aspect-[3/4] rounded-2xl"></div>').join('');
+      document.getElementById('empty-state').classList.add('hidden');
+
+      const params = { ...filters, page: currentPage, limit: 12 };
+      try {
+        const data = await fetchProducts(params);
+        const products = data.data || data.products || data;
+        const total = data.total || data.count || products.length;
+        const limit = 12;
+        totalPages = Math.ceil(total / limit);
+
+        document.getElementById('results-count').innerHTML =
+          `<span class="text-white font-semibold">${total}</span> products found`;
+
+        if (products.length === 0) {
+          grid.innerHTML = '';
+          document.getElementById('empty-state').classList.remove('hidden');
+          document.getElementById('pagination').innerHTML = '';
+          return;
+        }
+
+        grid.innerHTML = products.map((p, i) => createProductCard(p, i)).join('');
+        renderPagination();
+        AOS.refresh();
+      } catch (err) {
+        grid.innerHTML = `<div class="col-span-full text-center py-10 text-red-400">Failed to load products. Is the API running?</div>`;
+        console.error(err);
+      }
+    }
+
+    function renderPagination() {
+      const pag = document.getElementById('pagination');
+      if (totalPages <= 1) { pag.innerHTML = ''; return; }
+      let html = '';
+      html += `<button onclick="goPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''} class="w-9 h-9 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed text-sm transition-all">
+        <i class="fa-solid fa-chevron-left text-xs"></i></button>`;
+      for (let i = 1; i <= totalPages; i++) {
+        if (i === 1 || i === totalPages || (i >= currentPage - 2 && i <= currentPage + 2)) {
+          html += `<button onclick="goPage(${i})" class="w-9 h-9 rounded-xl text-sm font-semibold transition-all ${i === currentPage ? 'bg-indigo-600 text-white' : 'bg-white/5 border border-white/10 hover:bg-white/10 text-white/60'}">${i}</button>`;
+        } else if (i === currentPage - 3 || i === currentPage + 3) {
+          html += `<span class="w-9 h-9 flex items-center justify-center text-white/30 text-sm">···</span>`;
+        }
+      }
+      html += `<button onclick="goPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''} class="w-9 h-9 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed text-sm transition-all">
+        <i class="fa-solid fa-chevron-right text-xs"></i></button>`;
+      pag.innerHTML = html;
+    }
+
+    function goPage(n) {
+      if (n < 1 || n > totalPages) return;
+      currentPage = n;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      loadProducts();
+    }
+
+    // Search
+    let searchTimer;
+    document.getElementById('search-input').addEventListener('input', e => {
+      clearTimeout(searchTimer);
+      searchTimer = setTimeout(() => {
+        filters.search = e.target.value.trim() || undefined;
+        currentPage = 1;
+        loadProducts();
+      }, 400);
+    });
+
+    // Sort
+    document.getElementById('sort-select').addEventListener('change', e => {
+      filters.sort = e.target.value;
+      currentPage = 1;
+      loadProducts();
+    });
+
+    // Price range
+    document.getElementById('price-range').addEventListener('input', e => {
+      document.getElementById('price-display').textContent = `Up to $${e.target.value}`;
+    });
+
+    // Apply filters
+    document.getElementById('apply-filters').addEventListener('click', () => {
+      const cat = document.querySelector('input[name="category"]:checked')?.value;
+      filters.category = cat || undefined;
+      filters.maxPrice = document.getElementById('price-range').value;
+      const inStock = document.getElementById('in-stock-only').checked;
+      if (inStock) filters.stock = 'true';
+      else delete filters.stock;
+      currentPage = 1;
+      loadProducts();
+    });
+
+    // Clear filters
+    document.getElementById('clear-filters').addEventListener('click', () => {
+      document.querySelector('input[name="category"][value=""]').checked = true;
+      document.getElementById('price-range').value = 1000;
+      document.getElementById('price-display').textContent = 'Up to $1000';
+      document.getElementById('in-stock-only').checked = false;
+      document.getElementById('search-input').value = '';
+      filters = {};
+      currentPage = 1;
+      loadProducts();
+    });
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      updateNavbarAuth();
+      await updateCartCount();
+      await Promise.all([loadCategories(), loadProducts()]);
+    });
+  </script>
+</body>
+</html>

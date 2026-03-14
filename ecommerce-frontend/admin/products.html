@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Products — Admin — ShopLux</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config={theme:{extend:{colors:{primary:'#6366f1'},fontFamily:{sans:['Inter','sans-serif']}}}}</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="../css/custom.css" />
+</head>
+<body class="bg-[#0a0a0a] text-white min-h-screen flex">
+
+  <!-- SIDEBAR -->
+  <aside class="w-64 flex-shrink-0 h-screen sticky top-0 border-r border-white/10 flex flex-col p-5">
+    <a href="../index.html" class="flex items-center gap-2.5 mb-8">
+      <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/30">
+        <i class="fa-solid fa-bolt text-sm text-white"></i>
+      </div>
+      <span class="text-lg font-bold">Shop<span class="text-indigo-400">Lux</span></span>
+    </a>
+    <div class="flex items-center gap-2 px-3 py-2 rounded-xl bg-indigo-600/10 border border-indigo-500/20 mb-6">
+      <i class="fa-solid fa-shield-halved text-indigo-400 text-sm"></i>
+      <span class="text-xs font-semibold text-indigo-300 uppercase tracking-wider">Admin Panel</span>
+    </div>
+    <nav class="space-y-1 flex-1">
+      <a href="index.html" class="admin-sidebar-link"><i class="fa-solid fa-chart-line w-4"></i> Dashboard</a>
+      <a href="products.html" class="admin-sidebar-link active"><i class="fa-solid fa-box w-4"></i> Products</a>
+      <a href="orders.html" class="admin-sidebar-link"><i class="fa-solid fa-receipt w-4"></i> Orders</a>
+      <a href="categories.html" class="admin-sidebar-link"><i class="fa-solid fa-tag w-4"></i> Categories</a>
+    </nav>
+    <div class="mt-auto pt-4 border-t border-white/10 space-y-1">
+      <a href="../index.html" class="admin-sidebar-link"><i class="fa-solid fa-store w-4"></i> View Store</a>
+      <button onclick="logout()" class="admin-sidebar-link text-red-400 hover:text-red-300 w-full text-left"><i class="fa-solid fa-right-from-bracket w-4"></i> Logout</button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="flex-1 overflow-auto">
+    <header class="sticky top-0 z-10 bg-[#0a0a0a]/80 backdrop-blur border-b border-white/10 px-8 py-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+      <div>
+        <h1 class="text-xl font-bold">Products</h1>
+        <p class="text-xs text-white/40">Manage your product catalog</p>
+      </div>
+      <div class="flex items-center gap-3">
+        <div class="relative">
+          <i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-white/30 text-xs"></i>
+          <input id="product-search" type="text" placeholder="Search products..." class="pl-9 pr-4 py-2.5 rounded-xl bg-white/5 border border-white/15 outline-none text-xs text-white placeholder-white/30 focus:border-indigo-500 transition-all w-48" />
+        </div>
+        <button onclick="openModal()" class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-sm font-semibold transition-all whitespace-nowrap">
+          <i class="fa-solid fa-plus"></i> Add Product
+        </button>
+      </div>
+    </header>
+
+    <div class="p-6">
+      <div class="rounded-2xl bg-white/5 border border-white/10 overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full min-w-[800px] admin-table">
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th>Stock</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="products-body">
+              <tr><td colspan="6" class="text-center py-8 text-white/30"><i class="fa-solid fa-spinner animate-spin mr-2"></i>Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Pagination -->
+      <div id="pagination" class="flex items-center justify-center gap-2 mt-6"></div>
+    </div>
+  </main>
+
+  <!-- ADD/EDIT PRODUCT MODAL -->
+  <div id="product-modal" class="hidden modal-overlay">
+    <div class="modal-box">
+      <div class="flex items-center justify-between mb-6">
+        <h2 id="modal-title" class="text-xl font-bold">Add Product</h2>
+        <button onclick="closeModal()" class="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors">
+          <i class="fa-solid fa-times text-sm"></i>
+        </button>
+      </div>
+      <form id="product-form" enctype="multipart/form-data" class="space-y-4">
+        <input type="hidden" id="edit-id" />
+        <div>
+          <label class="block text-xs font-semibold text-white/50 uppercase tracking-wider mb-2">Product Name *</label>
+          <input id="p-name" type="text" required placeholder="e.g. Wireless Headphones"
+            class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/15 focus:border-indigo-500 outline-none text-sm placeholder-white/30 input-glow transition-all" />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-white/50 uppercase tracking-wider mb-2">Description *</label>
+          <textarea id="p-desc" rows="3" required placeholder="Product description..."
+            class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/15 focus:border-indigo-500 outline-none text-sm placeholder-white/30 resize-none input-glow transition-all"></textarea>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-white/50 uppercase tracking-wider mb-2">Price ($) *</label>
+            <input id="p-price" type="number" min="0" step="0.01" required placeholder="29.99"
+              class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/15 focus:border-indigo-500 outline-none text-sm placeholder-white/30 input-glow transition-all" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-white/50 uppercase tracking-wider mb-2">Stock *</label>
+            <input id="p-stock" type="number" min="0" required placeholder="100"
+              class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/15 focus:border-indigo-500 outline-none text-sm placeholder-white/30 input-glow transition-all" />
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-white/50 uppercase tracking-wider mb-2">Category *</label>
+          <select id="p-category" required
+            class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/15 focus:border-indigo-500 outline-none text-sm text-white cursor-pointer input-glow transition-all">
+            <option value="">Select category...</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-white/50 uppercase tracking-wider mb-2">Product Image</label>
+          <div class="relative">
+            <input id="p-image" type="file" accept="image/*" class="hidden" />
+            <button type="button" onclick="document.getElementById('p-image').click()"
+              class="w-full px-4 py-3 rounded-xl bg-white/5 border border-dashed border-white/25 hover:border-indigo-500/50 text-sm text-white/40 hover:text-white/70 transition-all text-left">
+              <i class="fa-solid fa-upload mr-2"></i>
+              <span id="file-label">Click to upload image</span>
+            </button>
+          </div>
+          <div id="image-preview-wrap" class="hidden mt-3">
+            <img id="image-preview" src="" alt="Preview" class="w-24 h-24 object-cover rounded-xl border border-white/10" />
+          </div>
+        </div>
+        <div class="flex gap-3 pt-2">
+          <button type="button" onclick="closeModal()" class="flex-1 py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-sm font-medium transition-all">Cancel</button>
+          <button type="submit" id="submit-btn" class="flex-1 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-sm font-semibold transition-all">
+            <span id="submit-label">Add Product</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- DELETE MODAL -->
+  <div id="delete-modal" class="hidden modal-overlay">
+    <div class="modal-box text-center max-w-sm">
+      <div class="w-14 h-14 rounded-2xl bg-red-500/20 flex items-center justify-center mx-auto mb-4">
+        <i class="fa-solid fa-trash text-red-400 text-xl"></i>
+      </div>
+      <h3 class="text-lg font-bold mb-2">Delete Product</h3>
+      <p class="text-white/50 text-sm mb-6">This will permanently remove the product.</p>
+      <div class="flex gap-3">
+        <button onclick="document.getElementById('delete-modal').classList.add('hidden')" class="flex-1 py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-sm font-medium transition-all">Cancel</button>
+        <button id="confirm-delete-btn" class="flex-1 py-3 rounded-xl bg-red-600 hover:bg-red-500 text-sm font-semibold transition-all">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/admin.js"></script>
+  <script>
+    let currentPage = 1;
+    let totalPages = 1;
+    let searchTimer;
+    let deletingId = null;
+    let categories = [];
+    let editMode = false;
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      if (!requireAdmin()) return;
+      await loadCategoryOptions();
+      loadProducts();
+
+      // Search
+      document.getElementById('product-search').addEventListener('input', (e) => {
+        clearTimeout(searchTimer);
+        searchTimer = setTimeout(() => { currentPage = 1; loadProducts(e.target.value.trim()); }, 400);
+      });
+
+      // Image preview
+      document.getElementById('p-image').addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        document.getElementById('file-label').textContent = file.name;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          document.getElementById('image-preview').src = ev.target.result;
+          document.getElementById('image-preview-wrap').classList.remove('hidden');
+        };
+        reader.readAsDataURL(file);
+      });
+    });
+
+    async function loadCategoryOptions() {
+      try {
+        const data = await adminGetCategories();
+        categories = Array.isArray(data) ? data : (data.data || []);
+        const sel = document.getElementById('p-category');
+        categories.forEach(cat => {
+          const opt = document.createElement('option');
+          opt.value = cat._id;
+          opt.textContent = cat.name;
+          sel.appendChild(opt);
+        });
+      } catch (e) { console.error('Failed to load categories:', e); }
+    }
+
+    async function loadProducts(search = '') {
+      const tbody = document.getElementById('products-body');
+      tbody.innerHTML = '<tr><td colspan="6" class="text-center py-8 text-white/30"><i class="fa-solid fa-spinner animate-spin mr-2"></i>Loading...</td></tr>';
+      try {
+        const data = await adminGetProducts({ page: currentPage, limit: 15, search: search || undefined });
+        const products = data.data || data.products || data;
+        const total = data.total || data.count || products.length;
+        totalPages = Math.ceil(total / 15) || 1;
+
+        if (!products.length) {
+          tbody.innerHTML = '<tr><td colspan="6" class="text-center py-8 text-white/30">No products found</td></tr>';
+          renderPagination();
+          return;
+        }
+
+        tbody.innerHTML = products.map(p => {
+          const inStock = p.stock > 0;
+          const catName = p.category?.name || categories.find(c => c._id === p.category)?.name || '—';
+          return `<tr>
+            <td>
+              <div class="flex items-center gap-3">
+                <img src="${getImageUrl(p.image)}" class="w-10 h-10 rounded-xl object-cover flex-shrink-0 border border-white/10" onerror="this.src='https://via.placeholder.com/40/1a1a2e/6366f1?text=?'" />
+                <span class="font-medium text-sm max-w-[180px] truncate">${p.name}</span>
+              </div>
+            </td>
+            <td class="text-white/50 text-sm">${catName}</td>
+            <td class="font-bold text-indigo-400">${formatPrice(p.price)}</td>
+            <td class="text-sm">${p.stock}</td>
+            <td>${inStock
+              ? '<span class="px-2.5 py-1 rounded-full border border-green-500/30 bg-green-500/15 text-green-400 text-xs font-semibold">In Stock</span>'
+              : '<span class="px-2.5 py-1 rounded-full border border-red-500/30 bg-red-500/15 text-red-400 text-xs font-semibold">Out of Stock</span>'}</td>
+            <td>
+              <div class="flex items-center gap-2">
+                <button onclick="editProduct(${JSON.stringify(p).replace(/"/g, '&quot;')})" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-600/15 hover:bg-indigo-600/30 text-indigo-400 text-xs font-medium transition-all">
+                  <i class="fa-solid fa-pen text-xs"></i> Edit
+                </button>
+                <button onclick="openDeleteModal('${p._id}')" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-500/15 hover:bg-red-500/30 text-red-400 text-xs font-medium transition-all">
+                  <i class="fa-solid fa-trash text-xs"></i> Delete
+                </button>
+              </div>
+            </td>
+          </tr>`;
+        }).join('');
+
+        renderPagination();
+      } catch (e) {
+        tbody.innerHTML = '<tr><td colspan="6" class="text-center py-8 text-red-400">Failed to load products</td></tr>';
+        console.error(e);
+      }
+    }
+
+    function renderPagination() {
+      const pag = document.getElementById('pagination');
+      if (totalPages <= 1) { pag.innerHTML = ''; return; }
+      let html = '';
+      html += `<button onclick="goPage(${currentPage-1})" ${currentPage===1?'disabled':''} class="w-9 h-9 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 disabled:opacity-30 text-sm transition-all"><i class="fa-solid fa-chevron-left text-xs"></i></button>`;
+      for (let i = 1; i <= totalPages; i++) {
+        html += `<button onclick="goPage(${i})" class="w-9 h-9 rounded-xl text-sm font-semibold transition-all ${i===currentPage?'bg-indigo-600 text-white':'bg-white/5 border border-white/10 hover:bg-white/10 text-white/60'}">${i}</button>`;
+      }
+      html += `<button onclick="goPage(${currentPage+1})" ${currentPage===totalPages?'disabled':''} class="w-9 h-9 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 disabled:opacity-30 text-sm transition-all"><i class="fa-solid fa-chevron-right text-xs"></i></button>`;
+      pag.innerHTML = html;
+    }
+
+    function goPage(n) {
+      if (n < 1 || n > totalPages) return;
+      currentPage = n;
+      loadProducts(document.getElementById('product-search').value.trim());
+    }
+
+    function openModal(reset = true) {
+      if (reset) {
+        editMode = false;
+        document.getElementById('edit-id').value = '';
+        document.getElementById('modal-title').textContent = 'Add Product';
+        document.getElementById('submit-label').textContent = 'Add Product';
+        document.getElementById('product-form').reset();
+        document.getElementById('file-label').textContent = 'Click to upload image';
+        document.getElementById('image-preview-wrap').classList.add('hidden');
+      }
+      document.getElementById('product-modal').classList.remove('hidden');
+    }
+
+    function closeModal() {
+      document.getElementById('product-modal').classList.add('hidden');
+    }
+
+    function editProduct(p) {
+      editMode = true;
+      document.getElementById('edit-id').value = p._id;
+      document.getElementById('modal-title').textContent = 'Edit Product';
+      document.getElementById('submit-label').textContent = 'Save Changes';
+      document.getElementById('p-name').value = p.name || '';
+      document.getElementById('p-desc').value = p.description || '';
+      document.getElementById('p-price').value = p.price || '';
+      document.getElementById('p-stock').value = p.stock || '';
+      document.getElementById('p-category').value = p.category?._id || p.category || '';
+      document.getElementById('file-label').textContent = p.image ? 'Current image (upload to change)' : 'Click to upload image';
+      if (p.image) {
+        document.getElementById('image-preview').src = getImageUrl(p.image);
+        document.getElementById('image-preview-wrap').classList.remove('hidden');
+      }
+      openModal(false);
+    }
+
+    document.getElementById('product-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('submit-btn');
+      btn.innerHTML = '<i class="fa-solid fa-spinner animate-spin mr-2"></i>Saving...';
+      btn.disabled = true;
+
+      const formData = new FormData();
+      formData.append('name', document.getElementById('p-name').value.trim());
+      formData.append('description', document.getElementById('p-desc').value.trim());
+      formData.append('price', document.getElementById('p-price').value);
+      formData.append('stock', document.getElementById('p-stock').value);
+      formData.append('category', document.getElementById('p-category').value);
+      const imgFile = document.getElementById('p-image').files[0];
+      if (imgFile) formData.append('image', imgFile);
+
+      try {
+        if (editMode) {
+          await adminUpdateProduct(document.getElementById('edit-id').value, formData);
+          showToast('Product updated!', 'success');
+        } else {
+          await adminCreateProduct(formData);
+          showToast('Product created!', 'success');
+        }
+        closeModal();
+        loadProducts(document.getElementById('product-search').value.trim());
+      } catch (err) {
+        showToast(err.response?.data?.message || 'Failed to save product', 'error');
+      } finally {
+        btn.innerHTML = `<span id="submit-label">${editMode ? 'Save Changes' : 'Add Product'}</span>`;
+        btn.disabled = false;
+      }
+    });
+
+    function openDeleteModal(id) {
+      deletingId = id;
+      document.getElementById('delete-modal').classList.remove('hidden');
+    }
+
+    document.getElementById('confirm-delete-btn').addEventListener('click', async () => {
+      if (!deletingId) return;
+      const btn = document.getElementById('confirm-delete-btn');
+      btn.innerHTML = '<i class="fa-solid fa-spinner animate-spin"></i>';
+      btn.disabled = true;
+      try {
+        await adminDeleteProduct(deletingId);
+        showToast('Product deleted', 'success');
+        document.getElementById('delete-modal').classList.add('hidden');
+        loadProducts(document.getElementById('product-search').value.trim());
+      } catch (err) {
+        showToast(err.response?.data?.message || 'Failed to delete', 'error');
+      } finally {
+        btn.innerHTML = 'Delete';
+        btn.disabled = false;
+        deletingId = null;
+      }
+    });
+  </script>
+</body>
+</html>

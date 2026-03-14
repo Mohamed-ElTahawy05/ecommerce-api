@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Product Details — ShopLux</title>
+  <meta name="description" content="View detailed product information, pricing, and add items to your cart." />
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { primary: '#6366f1' },
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
+        }
+      }
+    }
+  </script>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <!-- AOS Animations -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+
+  <!-- SwiperJS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="css/custom.css" />
+</head>
+<body class="bg-[#0a0a0a] text-white min-h-screen">
+
+  <!-- ─── NAVBAR ────────────────────────────────────────────────────────────── -->
+  <header id="navbar" class="navbar-blur fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+
+        <!-- Logo -->
+        <a href="index.html" class="flex items-center gap-2.5 group">
+          <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/30 group-hover:shadow-indigo-500/50 transition-shadow">
+            <i class="fa-solid fa-bolt text-sm text-white"></i>
+          </div>
+          <span class="text-lg font-bold tracking-tight">Shop<span class="text-indigo-400">Lux</span></span>
+        </a>
+
+        <!-- Center Nav -->
+        <nav class="hidden md:flex items-center gap-1">
+          <a href="index.html" class="px-4 py-2 rounded-xl text-sm text-white/60 hover:text-white hover:bg-white/5 transition-all">Home</a>
+          <a href="products.html" class="px-4 py-2 rounded-xl text-sm text-white hover:bg-white/5 transition-all font-medium">Products</a>
+        </nav>
+
+        <!-- Right Side -->
+        <div class="flex items-center gap-3">
+          <!-- Cart -->
+          <a href="cart.html" class="relative p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition-all duration-300 group">
+            <i class="fa-solid fa-cart-shopping text-white/70 group-hover:text-white transition-colors"></i>
+            <span id="cart-count" class="hidden absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-indigo-600 text-xs font-bold flex items-center justify-center shadow-lg">0</span>
+          </a>
+
+          <!-- Auth Area -->
+          <div id="nav-auth" class="flex items-center gap-2">
+            <!-- populated by auth.js -->
+          </div>
+
+          <!-- Mobile Menu Toggle -->
+          <button id="mobile-menu-btn" class="md:hidden p-2.5 rounded-xl bg-white/5 border border-white/10 text-white/70">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobile Menu -->
+      <div id="mobile-menu" class="hidden md:hidden pb-4 border-t border-white/10 mt-2 pt-4 space-y-1">
+        <a href="index.html" class="block px-4 py-2 rounded-xl text-sm text-white/60 hover:text-white hover:bg-white/5 transition-all">Home</a>
+        <a href="products.html" class="block px-4 py-2 rounded-xl text-sm text-white hover:bg-white/5 transition-all">Products</a>
+        <a href="cart.html" class="block px-4 py-2 rounded-xl text-sm text-white/60 hover:text-white hover:bg-white/5 transition-all">Cart</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ─── BREADCRUMB ────────────────────────────────────────────────────────── -->
+  <div class="pt-24 pb-4 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <nav class="flex items-center gap-2 text-sm text-white/40">
+      <a href="index.html" class="hover:text-white transition-colors">Home</a>
+      <i class="fa-solid fa-chevron-right text-xs"></i>
+      <a href="products.html" class="hover:text-white transition-colors">Products</a>
+      <i class="fa-solid fa-chevron-right text-xs"></i>
+      <span id="breadcrumb-name" class="text-white/70">Loading...</span>
+    </nav>
+  </div>
+
+  <!-- ─── MAIN PRODUCT SECTION ─────────────────────────────────────────────── -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
+
+    <!-- Product Content -->
+    <div id="product-container">
+      <!-- Loading Skeleton -->
+      <div id="product-skeleton" class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+        <div class="skeleton aspect-square rounded-2xl"></div>
+        <div class="space-y-4">
+          <div class="skeleton h-6 w-24 rounded-full"></div>
+          <div class="skeleton h-10 w-4/5 rounded-xl"></div>
+          <div class="skeleton h-10 w-3/5 rounded-xl"></div>
+          <div class="skeleton h-8 w-32 rounded-xl mt-6"></div>
+          <div class="skeleton h-4 w-full rounded-lg mt-6"></div>
+          <div class="skeleton h-4 w-5/6 rounded-lg"></div>
+          <div class="skeleton h-4 w-4/6 rounded-lg"></div>
+          <div class="skeleton h-14 w-full rounded-xl mt-8"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Product Detail (populated by JS) -->
+    <div id="product-detail" class="hidden">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start" data-aos="fade-up">
+
+        <!-- ─ Image Gallery ─ -->
+        <div class="space-y-4">
+          <div class="relative rounded-2xl overflow-hidden bg-white/5 border border-white/10 aspect-square group">
+            <img id="product-image" src="" alt="" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" />
+            <!-- Badges overlay -->
+            <div class="absolute top-4 left-4 flex flex-col gap-2">
+              <span id="badge-stock" class="hidden px-3 py-1 rounded-full text-xs font-semibold border"></span>
+            </div>
+            <!-- Zoom hint -->
+            <div class="absolute bottom-4 right-4 px-3 py-1 rounded-full bg-black/40 backdrop-blur-sm text-xs text-white/50">
+              <i class="fa-solid fa-magnifying-glass-plus mr-1"></i> Hover to zoom
+            </div>
+          </div>
+        </div>
+
+        <!-- ─ Product Info ─ -->
+        <div class="space-y-6 lg:sticky lg:top-24">
+
+          <!-- Category & Status -->
+          <div class="flex items-center justify-between flex-wrap gap-3">
+            <span id="product-category" class="px-3 py-1 rounded-full bg-indigo-500/15 border border-indigo-500/30 text-indigo-400 text-xs font-semibold uppercase tracking-wider"></span>
+            <div id="product-stock-status" class="flex items-center gap-2 text-sm"></div>
+          </div>
+
+          <!-- Name -->
+          <div>
+            <h1 id="product-name" class="text-3xl sm:text-4xl font-black leading-tight tracking-tight"></h1>
+          </div>
+
+          <!-- Price -->
+          <div class="flex items-baseline gap-3">
+            <span id="product-price" class="text-4xl font-black text-indigo-400 text-glow"></span>
+          </div>
+
+          <!-- Divider -->
+          <hr class="border-white/10" />
+
+          <!-- Description -->
+          <div>
+            <h3 class="text-sm font-semibold text-white/50 uppercase tracking-wider mb-3">Description</h3>
+            <p id="product-description" class="text-white/70 leading-relaxed text-sm"></p>
+          </div>
+
+          <!-- Divider -->
+          <hr class="border-white/10" />
+
+          <!-- Quantity Selector -->
+          <div>
+            <h3 class="text-sm font-semibold text-white/50 uppercase tracking-wider mb-3">Quantity</h3>
+            <div class="flex items-center gap-4">
+              <div class="flex items-center rounded-xl border border-white/20 overflow-hidden bg-white/5">
+                <button id="qty-minus" class="px-4 py-3 hover:bg-white/10 transition-colors text-white/70 hover:text-white">
+                  <i class="fa-solid fa-minus text-xs"></i>
+                </button>
+                <span id="qty-display" class="px-5 py-3 text-base font-bold border-x border-white/10 min-w-[52px] text-center">1</span>
+                <button id="qty-plus" class="px-4 py-3 hover:bg-white/10 transition-colors text-white/70 hover:text-white">
+                  <i class="fa-solid fa-plus text-xs"></i>
+                </button>
+              </div>
+              <span id="stock-left" class="text-sm text-white/40"></span>
+            </div>
+          </div>
+
+          <!-- CTA Buttons -->
+          <div class="flex flex-col sm:flex-row gap-3 pt-2">
+            <button id="add-to-cart-btn" class="flex-1 flex items-center justify-center gap-3 px-8 py-4 rounded-2xl bg-indigo-600 hover:bg-indigo-500 font-bold text-base transition-all duration-300 shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/40 hover:-translate-y-0.5 active:scale-98 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0">
+              <i class="fa-solid fa-cart-plus"></i>
+              <span>Add to Cart</span>
+            </button>
+            <button id="buy-now-btn" class="flex items-center justify-center gap-2 px-6 py-4 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/15 font-semibold text-sm transition-all duration-300 hover:-translate-y-0.5">
+              <i class="fa-solid fa-bolt"></i>
+              <span>Buy Now</span>
+            </button>
+          </div>
+
+          <!-- Trust Badges -->
+          <div class="grid grid-cols-3 gap-3 pt-2">
+            <div class="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-white/5 border border-white/10 text-center">
+              <i class="fa-solid fa-shield-halved text-green-400"></i>
+              <span class="text-xs text-white/50">Secure Payment</span>
+            </div>
+            <div class="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-white/5 border border-white/10 text-center">
+              <i class="fa-solid fa-rotate-left text-blue-400"></i>
+              <span class="text-xs text-white/50">Easy Returns</span>
+            </div>
+            <div class="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-white/5 border border-white/10 text-center">
+              <i class="fa-solid fa-truck-fast text-indigo-400"></i>
+              <span class="text-xs text-white/50">Fast Delivery</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Error State -->
+    <div id="product-error" class="hidden text-center py-20">
+      <div class="w-20 h-20 mx-auto mb-5 rounded-full bg-red-500/10 flex items-center justify-center">
+        <i class="fa-solid fa-triangle-exclamation text-red-400 text-3xl"></i>
+      </div>
+      <h2 class="text-xl font-bold text-white/80 mb-2">Product Not Found</h2>
+      <p class="text-white/40 mb-6">The product you are looking for doesn't exist or may have been removed.</p>
+      <a href="products.html" class="inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 hover:bg-indigo-500 rounded-xl text-sm font-semibold transition-all">
+        <i class="fa-solid fa-arrow-left"></i> Back to Products
+      </a>
+    </div>
+
+  </main>
+
+  <!-- ─── RELATED PRODUCTS ──────────────────────────────────────────────────── -->
+  <section id="related-section" class="hidden py-16 border-t border-white/10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between mb-10" data-aos="fade-up">
+        <div>
+          <p class="text-indigo-400 text-sm font-semibold uppercase tracking-widest mb-1">You Might Also Like</p>
+          <h2 class="text-3xl font-black">Related Products</h2>
+        </div>
+        <a href="products.html" class="hidden sm:flex items-center gap-2 text-sm text-white/50 hover:text-white transition-colors">
+          View All <i class="fa-solid fa-arrow-right"></i>
+        </a>
+      </div>
+
+      <!-- Swiper -->
+      <div class="swiper related-swiper" data-aos="fade-up" data-aos-delay="100">
+        <div class="swiper-wrapper pb-10" id="related-products-container">
+          <!-- populated by JS -->
+        </div>
+        <div class="swiper-pagination"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── FOOTER ────────────────────────────────────────────────────────────── -->
+  <footer class="border-t border-white/10 py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-10 mb-10">
+        <div class="col-span-1 md:col-span-2">
+          <a href="index.html" class="flex items-center gap-2.5 mb-4">
+            <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+              <i class="fa-solid fa-bolt text-sm text-white"></i>
+            </div>
+            <span class="text-lg font-bold">Shop<span class="text-indigo-400">Lux</span></span>
+          </a>
+          <p class="text-white/40 text-sm leading-relaxed max-w-xs">Premium e-commerce experience with curated products and seamless shopping.</p>
+        </div>
+        <div>
+          <h5 class="font-semibold text-sm mb-4">Shop</h5>
+          <ul class="space-y-2.5 text-sm text-white/40">
+            <li><a href="products.html" class="hover:text-white transition-colors">All Products</a></li>
+            <li><a href="cart.html" class="hover:text-white transition-colors">Cart</a></li>
+            <li><a href="profile.html" class="hover:text-white transition-colors">My Orders</a></li>
+          </ul>
+        </div>
+        <div>
+          <h5 class="font-semibold text-sm mb-4">Account</h5>
+          <ul class="space-y-2.5 text-sm text-white/40">
+            <li><a href="login.html" class="hover:text-white transition-colors">Login</a></li>
+            <li><a href="register.html" class="hover:text-white transition-colors">Register</a></li>
+            <li><a href="profile.html" class="hover:text-white transition-colors">Profile</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <p class="text-white/30 text-sm">© 2024 ShopLux. All rights reserved.</p>
+        <div class="flex items-center gap-4">
+          <a href="#" class="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-white/40 hover:text-white transition-all"><i class="fa-brands fa-twitter text-sm"></i></a>
+          <a href="#" class="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-white/40 hover:text-white transition-all"><i class="fa-brands fa-instagram text-sm"></i></a>
+          <a href="#" class="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-white/40 hover:text-white transition-all"><i class="fa-brands fa-github text-sm"></i></a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ─── SCRIPTS ───────────────────────────────────────────────────────────── -->
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/products.js"></script>
+
+  <script>
+    // ─── Init ──────────────────────────────────────────────────────────────────
+    AOS.init({ duration: 700, once: true, easing: 'ease-out-cubic' });
+
+    let currentProduct = null;
+    let quantity = 1;
+
+    // Mobile menu toggle
+    document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+      document.getElementById('mobile-menu').classList.toggle('hidden');
+    });
+
+    // ─── Load Product ──────────────────────────────────────────────────────────
+    async function loadProduct() {
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get('id');
+
+      if (!id) {
+        showError();
+        return;
+      }
+
+      try {
+        currentProduct = await fetchProduct(id);
+        renderProduct(currentProduct);
+        loadRelatedProducts(currentProduct.category?._id || currentProduct.category, id);
+      } catch (err) {
+        console.error(err);
+        showError();
+      }
+    }
+
+    function renderProduct(p) {
+      // Hide skeleton, show product
+      document.getElementById('product-skeleton').style.display = 'none';
+      document.getElementById('product-detail').classList.remove('hidden');
+
+      // Breadcrumb
+      document.getElementById('breadcrumb-name').textContent = p.name;
+      document.title = `${p.name} — ShopLux`;
+
+      // Image
+      const img = document.getElementById('product-image');
+      img.src = getImageUrl(p.image);
+      img.alt = p.name;
+
+      // Category
+      const catEl = document.getElementById('product-category');
+      catEl.textContent = p.category?.name || p.category || 'Uncategorized';
+
+      // Name
+      document.getElementById('product-name').textContent = p.name;
+
+      // Price
+      document.getElementById('product-price').textContent = formatPrice(p.price);
+
+      // Description
+      document.getElementById('product-description').textContent = p.description || 'No description available.';
+
+      // Stock status
+      const stockBadge = document.getElementById('badge-stock');
+      const stockStatus = document.getElementById('product-stock-status');
+      const stockLeft = document.getElementById('stock-left');
+      const addBtn = document.getElementById('add-to-cart-btn');
+      const buyBtn = document.getElementById('buy-now-btn');
+
+      if (p.stock > 0) {
+        stockBadge.classList.remove('hidden');
+        stockBadge.className = 'px-3 py-1 rounded-full text-xs font-semibold border bg-green-500/15 border-green-500/30 text-green-400';
+        stockBadge.textContent = 'In Stock';
+
+        stockStatus.innerHTML = `<div class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></div><span class="text-green-400 text-sm font-medium">In Stock</span>`;
+        stockLeft.textContent = p.stock <= 10 ? `Only ${p.stock} left` : `${p.stock} available`;
+
+        addBtn.disabled = false;
+        buyBtn.disabled = false;
+      } else {
+        stockBadge.classList.remove('hidden');
+        stockBadge.className = 'px-3 py-1 rounded-full text-xs font-semibold border bg-red-500/15 border-red-500/30 text-red-400';
+        stockBadge.textContent = 'Out of Stock';
+
+        stockStatus.innerHTML = `<div class="w-2 h-2 rounded-full bg-red-400"></div><span class="text-red-400 text-sm font-medium">Out of Stock</span>`;
+        stockLeft.textContent = 'Currently unavailable';
+
+        addBtn.disabled = true;
+        buyBtn.disabled = true;
+        addBtn.classList.add('opacity-50', 'cursor-not-allowed');
+        buyBtn.classList.add('opacity-50', 'cursor-not-allowed');
+      }
+
+      // Quantity controls
+      const maxQty = p.stock || 99;
+      document.getElementById('qty-minus').addEventListener('click', () => {
+        if (quantity > 1) {
+          quantity--;
+          document.getElementById('qty-display').textContent = quantity;
+        }
+      });
+
+      document.getElementById('qty-plus').addEventListener('click', () => {
+        if (quantity < maxQty) {
+          quantity++;
+          document.getElementById('qty-display').textContent = quantity;
+        } else {
+          showToast(`Only ${maxQty} items available`, 'warning');
+        }
+      });
+
+      // Add to cart
+      addBtn.addEventListener('click', async () => {
+        if (!isLoggedIn()) {
+          showToast('Please login to add items to cart', 'warning');
+          setTimeout(() => { window.location.href = 'login.html'; }, 1500);
+          return;
+        }
+        const originalHTML = addBtn.innerHTML;
+        addBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i><span>Adding...</span>`;
+        addBtn.disabled = true;
+        try {
+          await addToCart(p._id, quantity);
+          showToast(`${p.name} added to cart!`, 'success');
+          addBtn.innerHTML = `<i class="fa-solid fa-check"></i><span>Added to Cart</span>`;
+          addBtn.classList.replace('bg-indigo-600', 'bg-green-600');
+          setTimeout(() => {
+            addBtn.innerHTML = originalHTML;
+            addBtn.classList.replace('bg-green-600', 'bg-indigo-600');
+            addBtn.disabled = false;
+          }, 2500);
+        } catch (err) {
+          showToast(err.response?.data?.message || 'Failed to add to cart', 'error');
+          addBtn.innerHTML = originalHTML;
+          addBtn.disabled = false;
+        }
+      });
+
+      // Buy now (add to cart then redirect to cart)
+      buyBtn.addEventListener('click', async () => {
+        if (!isLoggedIn()) {
+          showToast('Please login to continue', 'warning');
+          setTimeout(() => { window.location.href = 'login.html'; }, 1500);
+          return;
+        }
+        buyBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i><span>Processing...</span>`;
+        buyBtn.disabled = true;
+        try {
+          await addToCart(p._id, quantity);
+          window.location.href = 'cart.html';
+        } catch (err) {
+          showToast(err.response?.data?.message || 'Failed to add to cart', 'error');
+          buyBtn.innerHTML = `<i class="fa-solid fa-bolt"></i><span>Buy Now</span>`;
+          buyBtn.disabled = false;
+        }
+      });
+    }
+
+    function showError() {
+      document.getElementById('product-skeleton').style.display = 'none';
+      document.getElementById('product-error').classList.remove('hidden');
+      document.title = 'Product Not Found — ShopLux';
+    }
+
+    // ─── Related Products ──────────────────────────────────────────────────────
+    async function loadRelatedProducts(categoryId, currentProductId) {
+      try {
+        const params = { limit: 8 };
+        if (categoryId) params.category = categoryId;
+
+        const data = await fetchProducts(params);
+        const products = (data.data || data).filter(p => p._id !== currentProductId);
+
+        if (products.length === 0) return;
+
+        const section = document.getElementById('related-section');
+        const container = document.getElementById('related-products-container');
+
+        section.classList.remove('hidden');
+        container.innerHTML = products.slice(0, 8).map(p => `
+          <div class="swiper-slide">
+            <div class="group rounded-2xl bg-white/5 border border-white/10 overflow-hidden hover:border-indigo-500/40 transition-all duration-500 hover:-translate-y-1 hover:shadow-xl hover:shadow-indigo-500/10">
+              <div class="relative overflow-hidden aspect-square">
+                <img src="${getImageUrl(p.image)}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                ${p.stock === 0 ? '<div class="absolute inset-0 bg-black/50 flex items-center justify-center"><span class="px-3 py-1 rounded-full bg-red-500/20 border border-red-500/30 text-red-400 text-xs font-semibold">Out of Stock</span></div>' : ''}
+              </div>
+              <div class="p-4">
+                ${p.category ? `<span class="text-xs text-indigo-400 font-medium uppercase tracking-wider">${p.category.name || p.category}</span>` : ''}
+                <h3 class="font-semibold text-white mt-1 mb-3 line-clamp-2 group-hover:text-indigo-300 transition-colors text-sm">
+                  <a href="product.html?id=${p._id}">${p.name}</a>
+                </h3>
+                <div class="flex items-center justify-between">
+                  <span class="text-lg font-black text-indigo-400">${formatPrice(p.price)}</span>
+                  <button onclick="handleAddToCart('${p._id}', this)" ${p.stock === 0 ? 'disabled' : ''} class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 disabled:cursor-not-allowed text-xs font-semibold transition-all hover:shadow-lg hover:shadow-indigo-500/20 active:scale-95">
+                    <i class="fa-solid fa-cart-plus"></i> Add
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>`).join('');
+
+        new Swiper('.related-swiper', {
+          slidesPerView: 1.2,
+          spaceBetween: 16,
+          centeredSlides: false,
+          pagination: { el: '.swiper-pagination', clickable: true },
+          breakpoints: {
+            480:  { slidesPerView: 2, spaceBetween: 16 },
+            768:  { slidesPerView: 3, spaceBetween: 20 },
+            1024: { slidesPerView: 4, spaceBetween: 24 },
+          },
+        });
+
+        AOS.refresh();
+      } catch (err) {
+        console.error('Failed to load related products:', err);
+      }
+    }
+
+    // ─── On Page Load ──────────────────────────────────────────────────────────
+    window.addEventListener('DOMContentLoaded', async () => {
+      updateNavbarAuth();
+      await updateCartCount();
+      await loadProduct();
+    });
+
+    // Navbar scroll effect
+    window.addEventListener('scroll', () => {
+      const navbar = document.getElementById('navbar');
+      if (window.scrollY > 20) {
+        navbar.classList.add('shadow-2xl');
+      } else {
+        navbar.classList.remove('shadow-2xl');
+      }
+    });
+  </script>
+</body>
+</html>
