@@ -1,5 +1,5 @@
 // ─── Axios Instance with JWT Interceptor ────────────────────────────────────
-const API_BASE = 'http://localhost:5000/api';
+const API_BASE = 'https://ecommerce-api-psi-three.vercel.app/api';
 
 const api = axios.create({
   baseURL: API_BASE,
@@ -125,10 +125,10 @@ function requireAdmin() {
 function getImageUrl(filename) {
   if (!filename) return 'https://via.placeholder.com/500x500/1a1a2e/6366f1?text=No+Image';
   if (filename.startsWith('http')) return filename;
-  return `http://localhost:5000/uploads/${filename}`;
+  return `https://ecommerce-api-psi-three.vercel.app/uploads/${filename}`;
 }
 
 // ─── Format Currency ──────────────────────────────────────────────────────────
 function formatPrice(price) {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(price);
-}
+} 
