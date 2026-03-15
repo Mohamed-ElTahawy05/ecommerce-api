@@ -595,7 +595,7 @@
 
         const products = productsRes.products || [];
         const topProducts = topProductsRes.products || [];
-        const orders = ordersRes.orders || [];
+        const orders = Array.isArray(ordersRes) ? ordersRes : (ordersRes.orders || []);
 
         const totalProducts = productsRes.total || 0;
         const totalOrders = orders.length;
@@ -715,7 +715,7 @@
 
       orders.forEach(o => {
         const tr = document.createElement("tr");
-        let itemCount = o.orderItems ? o.orderItems.length : 0;
+        let itemCount = o.items ? o.items.length : 0;
 
         tr.innerHTML = `
           <td class="td-mono">#${o._id.substring(o._id.length - 6).toUpperCase()}</td>
