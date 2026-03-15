@@ -7,7 +7,6 @@ const path = require('path');
 const errorMiddleware = require('./src/middlewares/errorMiddleware');
 const passport = require('./src/config/passport');
 const helmet = require('helmet');
-const mongoSanitize = require('express-mongo-sanitize');
 const rateLimit = require('express-rate-limit');
 
 dotenv.config();
@@ -19,7 +18,6 @@ app.use(cors());
 app.use(helmet());
 app.use(morgan('combined'));
 app.use(express.json({ limit: '10kb' }));
-app.use(mongoSanitize());
 
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000,
