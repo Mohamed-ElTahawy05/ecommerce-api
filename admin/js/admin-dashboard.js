@@ -5,7 +5,7 @@ function checkAdminAuth() {
   const user = JSON.parse(localStorage.getItem("user") || "{}");
   if (!token || user.role !== "admin") {
     console.warn("Unauthorized! Redirecting to login.");
-    // window.location.href = "../login.html";
+    window.location.href = "../login.html";
   }
   return token;
 }

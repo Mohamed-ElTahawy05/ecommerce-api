@@ -368,6 +368,8 @@
     let categoriesList = [];
 
     document.addEventListener("DOMContentLoaded", async () => {
+      checkAdminAuth();
+
       const user = JSON.parse(localStorage.getItem("user") || "{}");
       if (user.name) {
         document.getElementById("sidebar-name").textContent = user.name;

@@ -569,6 +569,8 @@
   
   <script>
     document.addEventListener("DOMContentLoaded", async () => {
+      checkAdminAuth();
+
       const user = JSON.parse(localStorage.getItem("user") || "{}");
       if (user.name) {
         document.getElementById("sidebar-name").textContent = user.name;
@@ -585,15 +587,17 @@
 
     async function loadDashboardData() {
       try {
-        const [productsRes, ordersRes] = await Promise.all([
-          adminFetch("/products?limit=100"), 
-          adminFetch("/orders")
+        const [productsRes, ordersRes, topProductsRes] = await Promise.all([
+          adminFetch("/products?limit=1"), 
+          adminFetch("/orders"),
+          adminFetch("/products?limit=4&sort=-createdAt")
         ]);
 
         const products = productsRes.products || [];
+        const topProducts = topProductsRes.products || [];
         const orders = ordersRes.orders || [];
 
-        const totalProducts = productsRes.total || products.length;
+        const totalProducts = productsRes.total || 0;
         const totalOrders = orders.length;
         
         let totalRevenue = 0;
@@ -628,7 +632,6 @@
         const sortedOrders = [...orders].sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
         renderRecentOrders(sortedOrders.slice(0, 10)); 
         
-        const topProducts = [...products].sort((a,b) => (b.stock || 0) - (a.stock || 0)).slice(0, 4);
         renderTopProducts(topProducts);
 
       } catch (err) {
