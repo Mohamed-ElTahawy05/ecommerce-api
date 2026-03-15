@@ -17,6 +17,18 @@
 </head>
 <body class="bg-[#0a0a0a] text-white min-h-screen overflow-x-hidden">
 
+  <!-- ─── TOP NOTIFICATION BAR ────────────────────── -->
+  <div id="top-notification-bar" class="hidden bg-indigo-600 text-white text-sm font-medium py-2 px-4 relative z-[60] transition-all duration-300">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <div class="flex-1 text-center truncate" id="notification-message">
+        <!-- Message will be injected here -->
+      </div>
+      <button id="close-notification" class="ml-4 hover:text-white/80 transition-colors" aria-label="Dismiss notification">
+        <i class="fa-solid fa-times"></i>
+      </button>
+    </div>
+  </div>
+
   <!-- ─── NAVBAR ────────────────────────────────── -->
   <header id="navbar" class="navbar-blur fixed top-0 left-0 right-0 z-50 transition-all duration-300">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -202,44 +214,86 @@
     </div>
   </section>
 
-  <!-- ─── FOOTER ────────────────────────────────── -->
-  <footer class="border-t border-white/10 py-12">
+    <!-- ─── FOOTER ────────────────────────────────── -->
+  <footer class="border-t border-white/10 pt-16 pb-8 bg-[#0a0a0a]">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-10 mb-10">
-        <div class="col-span-1 md:col-span-2">
-          <a href="index.html" class="flex items-center gap-2.5 mb-4">
-            <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
-              <i class="fa-solid fa-bolt text-sm"></i>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 mb-16">
+        <div class="lg:col-span-2">
+          <a href="index.html" class="flex items-center gap-2.5 mb-6">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/30">
+              <i class="fa-solid fa-bolt text-white"></i>
             </div>
-            <span class="text-lg font-bold">Shop<span class="text-indigo-400">Lux</span></span>
+            <span class="text-xl font-bold tracking-tight">Shop<span class="text-indigo-400">Lux</span></span>
           </a>
-          <p class="text-white/40 text-sm leading-relaxed max-w-xs">Premium e-commerce experience with curated products and seamless shopping.</p>
-          <div class="flex items-center gap-3 mt-5">
-            <a href="#" class="w-9 h-9 rounded-xl bg-white/5 hover:bg-indigo-600/20 border border-white/10 hover:border-indigo-500/30 flex items-center justify-center text-white/40 hover:text-indigo-400 transition-all"><i class="fa-brands fa-twitter text-sm"></i></a>
-            <a href="#" class="w-9 h-9 rounded-xl bg-white/5 hover:bg-indigo-600/20 border border-white/10 hover:border-indigo-500/30 flex items-center justify-center text-white/40 hover:text-indigo-400 transition-all"><i class="fa-brands fa-instagram text-sm"></i></a>
-            <a href="#" class="w-9 h-9 rounded-xl bg-white/5 hover:bg-indigo-600/20 border border-white/10 hover:border-indigo-500/30 flex items-center justify-center text-white/40 hover:text-indigo-400 transition-all"><i class="fa-brands fa-github text-sm"></i></a>
+          <p class="text-white/50 text-sm leading-relaxed max-w-sm mb-8">
+            Elevating your shopping experience with premium curated collections. Shop the future of style with seamless browsing and secure checkout.
+          </p>
+          <div class="flex items-center gap-3">
+            <a href="#" class="w-10 h-10 rounded-xl bg-white/5 hover:bg-indigo-600/20 border border-white/10 hover:border-indigo-500/30 flex items-center justify-center text-white/40 hover:text-indigo-400 transition-all group" title="Facebook">
+              <i class="fa-brands fa-facebook-f group-hover:scale-110 transition-transform"></i>
+            </a>
+            <a href="#" class="w-10 h-10 rounded-xl bg-white/5 hover:bg-indigo-600/20 border border-white/10 hover:border-indigo-500/30 flex items-center justify-center text-white/40 hover:text-indigo-400 transition-all group" title="Twitter">
+              <i class="fa-brands fa-twitter group-hover:scale-110 transition-transform"></i>
+            </a>
+            <a href="#" class="w-10 h-10 rounded-xl bg-white/5 hover:bg-indigo-600/20 border border-white/10 hover:border-indigo-500/30 flex items-center justify-center text-white/40 hover:text-indigo-400 transition-all group" title="Instagram">
+              <i class="fa-brands fa-instagram text-lg group-hover:scale-110 transition-transform"></i>
+            </a>
+            <a href="#" class="w-10 h-10 rounded-xl bg-white/5 hover:bg-indigo-600/20 border border-white/10 hover:border-indigo-500/30 flex items-center justify-center text-white/40 hover:text-indigo-400 transition-all group" title="TikTok">
+              <i class="fa-brands fa-tiktok group-hover:scale-110 transition-transform"></i>
+            </a>
           </div>
         </div>
+        
         <div>
-          <h5 class="font-semibold text-sm mb-4">Shop</h5>
-          <ul class="space-y-2.5 text-sm text-white/40">
-            <li><a href="products.html" class="hover:text-white transition-colors">All Products</a></li>
-            <li><a href="cart.html" class="hover:text-white transition-colors">Cart</a></li>
-            <li><a href="profile.html" class="hover:text-white transition-colors">My Orders</a></li>
+          <h5 class="font-bold text-base text-white mb-6">Shop</h5>
+          <ul class="space-y-4 text-sm text-white/50">
+            <li><a href="products.html?category=men" class="hover:text-indigo-400 transition-colors flex items-center gap-2"><i class="fa-solid fa-angle-right text-[10px] text-white/20"></i> Men</a></li>
+            <li><a href="products.html?category=women" class="hover:text-indigo-400 transition-colors flex items-center gap-2"><i class="fa-solid fa-angle-right text-[10px] text-white/20"></i> Women</a></li>
+            <li><a href="products.html?category=accessories" class="hover:text-indigo-400 transition-colors flex items-center gap-2"><i class="fa-solid fa-angle-right text-[10px] text-white/20"></i> Accessories</a></li>
+            <li><a href="products.html?discount=true" class="hover:text-indigo-400 transition-colors flex items-center gap-2"><i class="fa-solid fa-angle-right text-[10px] text-white/20"></i> Sale</a></li>
           </ul>
         </div>
+        
         <div>
-          <h5 class="font-semibold text-sm mb-4">Account</h5>
-          <ul class="space-y-2.5 text-sm text-white/40">
-            <li><a href="login.html" class="hover:text-white transition-colors">Login</a></li>
-            <li><a href="register.html" class="hover:text-white transition-colors">Register</a></li>
-            <li><a href="profile.html" class="hover:text-white transition-colors">Profile</a></li>
+          <h5 class="font-bold text-base text-white mb-6">Support</h5>
+          <ul class="space-y-4 text-sm text-white/50">
+            <li><a href="faq.html" class="hover:text-indigo-400 transition-colors flex items-center gap-2"><i class="fa-solid fa-angle-right text-[10px] text-white/20"></i> FAQ</a></li>
+            <li><a href="#" class="hover:text-indigo-400 transition-colors flex items-center gap-2"><i class="fa-solid fa-angle-right text-[10px] text-white/20"></i> Returns</a></li>
+            <li><a href="#" class="hover:text-indigo-400 transition-colors flex items-center gap-2"><i class="fa-solid fa-angle-right text-[10px] text-white/20"></i> Shipping</a></li>
+            <li><a href="#" class="hover:text-indigo-400 transition-colors flex items-center gap-2"><i class="fa-solid fa-angle-right text-[10px] text-white/20"></i> Contact Us</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h5 class="font-bold text-base text-white mb-6">Company</h5>
+          <ul class="space-y-4 text-sm text-white/50">
+            <li><a href="about.html" class="hover:text-indigo-400 transition-colors flex items-center gap-2"><i class="fa-solid fa-angle-right text-[10px] text-white/20"></i> About Us</a></li>
+            <li><a href="#" class="hover:text-indigo-400 transition-colors flex items-center gap-2"><i class="fa-solid fa-angle-right text-[10px] text-white/20"></i> Careers</a></li>
+            <li><a href="#" class="hover:text-indigo-400 transition-colors flex items-center gap-2"><i class="fa-solid fa-angle-right text-[10px] text-white/20"></i> Privacy Policy</a></li>
+            <li><a href="#" class="hover:text-indigo-400 transition-colors flex items-center gap-2"><i class="fa-solid fa-angle-right text-[10px] text-white/20"></i> Terms of Service</a></li>
           </ul>
         </div>
       </div>
-      <div class="pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <p class="text-white/30 text-sm">© 2024 ShopLux. All rights reserved.</p>
-        <p class="text-white/20 text-xs">Crafted with <span class="text-red-400">♥</span> and lots of coffee</p>
+      
+      <div class="pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-6">
+        <p class="text-white/40 text-sm">© 2024 ShopLux. All rights reserved.</p>
+        <div class="flex items-center gap-3">
+          <div class="h-8 px-3 rounded bg-white/5 border border-white/10 flex items-center justify-center text-white/50 hover:text-white transition-colors" title="Visa">
+            <i class="fa-brands fa-cc-visa text-xl"></i>
+          </div>
+          <div class="h-8 px-3 rounded bg-white/5 border border-white/10 flex items-center justify-center text-white/50 hover:text-white transition-colors" title="Mastercard">
+            <i class="fa-brands fa-cc-mastercard text-xl"></i>
+          </div>
+          <div class="h-8 px-3 rounded bg-white/5 border border-white/10 flex items-center justify-center text-white/50 hover:text-white transition-colors" title="PayPal">
+            <i class="fa-brands fa-cc-paypal text-xl"></i>
+          </div>
+          <div class="h-8 px-3 rounded bg-white/5 border border-white/10 flex items-center justify-center text-white/50 hover:text-white transition-colors" title="Apple Pay">
+            <i class="fa-brands fa-cc-apple-pay text-xl"></i>
+          </div>
+          <div class="h-8 px-3 rounded bg-white/5 border border-white/10 flex items-center justify-center text-white/50 hover:text-white transition-colors" title="Google Pay">
+            <i class="fa-brands fa-google-pay text-xl"></i>
+          </div>
+        </div>
       </div>
     </div>
   </footer>
@@ -252,7 +306,46 @@
   <script src="js/auth.js"></script>
   <script src="js/cart.js"></script>
   <script src="js/products.js"></script>
+  <script src="js/compare.js"></script>
   <script>
+    // Top Notification Bar Logic
+    const initNotificationBar = () => {
+      if (localStorage.getItem('topBarDismissed') === 'true') return;
+      
+      const bar = document.getElementById('top-notification-bar');
+      const msgEl = document.getElementById('notification-message');
+      const closeBtn = document.getElementById('close-notification');
+      
+      const messages = [
+        "🎉 Free shipping on orders over $50",
+        "✨ New arrivals every week"
+      ];
+      let currentMsgIdx = 0;
+
+      bar.classList.remove('hidden');
+
+      const rotateMessage = () => {
+        msgEl.style.opacity = 0;
+        setTimeout(() => {
+          msgEl.textContent = messages[currentMsgIdx];
+          msgEl.style.opacity = 1;
+          currentMsgIdx = (currentMsgIdx + 1) % messages.length;
+        }, 300); // Wait for fade out
+      };
+
+      rotateMessage(); // Show first message immediately
+      const rotationInterval = setInterval(rotateMessage, 5000); // Rotate every 5 seconds
+
+      closeBtn.addEventListener('click', () => {
+        bar.classList.add('hidden');
+        localStorage.setItem('topBarDismissed', 'true');
+        clearInterval(rotationInterval);
+      });
+      
+      // Add a style to msgEl for transition
+      msgEl.style.transition = 'opacity 0.3s ease';
+    };
+
     AOS.init({ duration: 700, once: true, easing: 'ease-out-cubic' });
 
     document.getElementById('mobile-menu-btn').addEventListener('click', () => {
@@ -351,6 +444,7 @@
     }
 
     window.addEventListener('DOMContentLoaded', async () => {
+      initNotificationBar();
       updateNavbarAuth();
       await updateCartCount();
       await Promise.all([loadCategories(), loadProductsSwiper()]);

@@ -32,9 +32,14 @@ function createProductCard(product, animIndex = 0) {
         </h3>
         <div class="flex items-center justify-between mt-3">
           <span class="text-xl font-bold text-indigo-400">${formatPrice(product.price)}</span>
-          <button onclick="handleAddToCart('${product._id}', this)" ${!inStock ? 'disabled' : ''} class="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 disabled:cursor-not-allowed text-xs font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-indigo-500/20 active:scale-95">
-            <i class="fa-solid fa-cart-plus"></i> Add
-          </button>
+          <div class="flex gap-2">
+            <button onclick="addToCompare(encodeURIComponent(JSON.stringify({_id: '${product._id}', name: '${product.name.replace(/'/g, "\\'")}', image: '${product.image}', price: ${product.price}})))" class="flex items-center justify-center w-9 h-9 rounded-xl bg-white/5 hover:bg-white/10 text-white/50 hover:text-white transition-all duration-300" title="Compare">
+              <i class="fa-solid fa-code-compare text-xs"></i>
+            </button>
+            <button onclick="handleAddToCart('${product._id}', this)" ${!inStock ? 'disabled' : ''} class="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 disabled:cursor-not-allowed text-xs font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-indigo-500/20 active:scale-95">
+              <i class="fa-solid fa-cart-plus"></i> Add
+            </button>
+          </div>
         </div>
       </div>
     </div>`;

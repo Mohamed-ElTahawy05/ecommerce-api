@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cart — ShopLux</title>
-  <meta name="description" content="Review your cart items and proceed to checkout." />
+  <title>Compare Products — ShopLux</title>
+  <meta name="description" content="Compare products side by side to make the best choice." />
   <script src="https://cdn.tailwindcss.com"></script>
   <script>tailwind.config={theme:{extend:{colors:{primary:'#6366f1'},fontFamily:{sans:['Inter','sans-serif']}}}}</script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -26,7 +26,7 @@
   </div>
 
   <!-- NAVBAR -->
-  <header id="navbar" class="navbar-blur fixed top-0 left-0 right-0 z-50">
+  <header id="navbar" class="navbar-blur fixed top-0 left-0 right-0 z-50 transition-all duration-300">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between h-16">
         <a href="index.html" class="flex items-center gap-2.5">
@@ -40,8 +40,8 @@
           <a href="products.html" class="px-4 py-2 rounded-xl text-sm text-white/60 hover:text-white hover:bg-white/5 transition-all">Products</a>
         </nav>
         <div class="flex items-center gap-3">
-          <a href="cart.html" class="relative p-2.5 rounded-xl bg-indigo-600/20 border border-indigo-500/30 transition-all">
-            <i class="fa-solid fa-cart-shopping text-indigo-400"></i>
+          <a href="cart.html" class="relative p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition-all group">
+            <i class="fa-solid fa-cart-shopping text-white/70 group-hover:text-white"></i>
             <span id="cart-count" class="hidden absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-indigo-600 text-xs font-bold flex items-center justify-center">0</span>
           </a>
           <div id="nav-auth" class="flex items-center gap-2"></div>
@@ -55,40 +55,70 @@
     <nav class="flex items-center gap-2 text-sm text-white/40">
       <a href="index.html" class="hover:text-white transition-colors">Home</a>
       <i class="fa-solid fa-chevron-right text-xs"></i>
-      <span class="text-white/70">Cart</span>
+      <span class="text-white/70">Compare</span>
     </nav>
   </div>
 
   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
-    <h1 class="text-4xl font-black mb-8">Your Cart</h1>
+    <div class="flex items-center justify-between mb-8">
+      <h1 class="text-4xl font-black">Compare Products</h1>
+      <button onclick="clearCompare()" class="px-4 py-2 rounded-xl bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-all text-sm font-semibold flex items-center gap-2">
+        <i class="fa-solid fa-trash-can"></i> Clear All
+      </button>
+    </div>
 
-    <div class="flex flex-col lg:flex-row gap-8">
-      <!-- Cart Items -->
-      <div class="flex-1 min-w-0">
-        <div id="cart-items" class="space-y-4">
-          <div class="skeleton h-28 rounded-2xl"></div>
-          <div class="skeleton h-28 rounded-2xl"></div>
-          <div class="skeleton h-28 rounded-2xl"></div>
-        </div>
+    <!-- Empty State -->
+    <div id="compare-empty" class="hidden text-center py-20 bg-white/5 border border-white/10 rounded-3xl">
+      <div class="w-20 h-20 mx-auto mb-5 rounded-full bg-white/5 flex items-center justify-center">
+        <i class="fa-solid fa-code-compare text-3xl text-white/20"></i>
       </div>
+      <h3 class="text-xl font-bold text-white mb-2">Nothing to compare</h3>
+      <p class="text-white/40 mb-6">Add up to 3 products to compare their features.</p>
+      <a href="products.html" class="inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 hover:bg-indigo-500 rounded-xl font-semibold transition-all">
+        Browse Products
+      </a>
+    </div>
 
-      <!-- Order Summary -->
-      <div class="w-full lg:w-80 flex-shrink-0">
-        <div class="rounded-2xl bg-white/5 border border-white/10 p-6 lg:sticky lg:top-24">
-          <h2 class="font-bold text-lg mb-5">Order Summary</h2>
-          <div id="order-summary">
-            <div class="skeleton h-4 w-full rounded my-2"></div>
-            <div class="skeleton h-4 w-4/5 rounded my-2"></div>
-            <div class="skeleton h-px w-full rounded my-4"></div>
-            <div class="skeleton h-6 w-full rounded my-2"></div>
-            <div class="skeleton h-12 w-full rounded-xl mt-6"></div>
+    <!-- Comparison Table -->
+    <div id="compare-content" class="hidden overflow-x-auto pb-6">
+      <div class="min-w-[800px]">
+        <!-- Header Row -->
+        <div id="compare-header" class="grid grid-cols-4 gap-6 items-end mb-6">
+          <div class="col-span-1"></div>
+          <!-- Injected via JS -->
+        </div>
+
+        <div class="bg-white/5 border border-white/10 rounded-2xl overflow-hidden divide-y divide-white/10">
+          
+          <!-- Price -->
+          <div class="grid grid-cols-4 gap-6 p-6">
+            <div class="col-span-1 flex items-center text-sm font-semibold text-white/50 uppercase tracking-wider">Price</div>
+            <div id="row-price" class="col-span-3 grid grid-cols-3 gap-6"></div>
           </div>
+          
+          <!-- Category -->
+          <div class="grid grid-cols-4 gap-6 p-6">
+            <div class="col-span-1 flex items-center text-sm font-semibold text-white/50 uppercase tracking-wider">Category</div>
+            <div id="row-category" class="col-span-3 grid grid-cols-3 gap-6"></div>
+          </div>
+          
+          <!-- Availability -->
+          <div class="grid grid-cols-4 gap-6 p-6">
+            <div class="col-span-1 flex items-center text-sm font-semibold text-white/50 uppercase tracking-wider">Availability</div>
+            <div id="row-stock" class="col-span-3 grid grid-cols-3 gap-6"></div>
+          </div>
+          
+          <!-- Description -->
+          <div class="grid grid-cols-4 gap-6 p-6">
+            <div class="col-span-1 font-semibold text-sm text-white/50 uppercase tracking-wider pt-2">Description</div>
+            <div id="row-desc" class="col-span-3 grid grid-cols-3 gap-6"></div>
+          </div>
+
         </div>
       </div>
     </div>
   </main>
 
-  <!-- FOOTER -->
     <!-- ─── FOOTER ────────────────────────────────── -->
   <footer class="border-t border-white/10 pt-16 pb-8 bg-[#0a0a0a]">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -179,50 +209,145 @@
   <script src="js/cart.js"></script>
   <script src="js/compare.js"></script>
   <script>
-    // ─── Top Notification Bar ──────────────────────────────────────────────────
+    // Top Notification Bar
     const initNotificationBar = () => {
       if (localStorage.getItem('topBarDismissed') === 'true') return;
-      
       const bar = document.getElementById('top-notification-bar');
       const msgEl = document.getElementById('notification-message');
       const closeBtn = document.getElementById('close-notification');
-      
-      const messages = [
-        "🎉 Free shipping on orders over $50",
-        "✨ New arrivals every week"
-      ];
+      const messages = ["🎉 Free shipping on orders over $50", "✨ New arrivals every week"];
       let currentMsgIdx = 0;
-
       bar.classList.remove('hidden');
-
       const rotateMessage = () => {
         msgEl.style.opacity = 0;
         setTimeout(() => {
           msgEl.textContent = messages[currentMsgIdx];
           msgEl.style.opacity = 1;
           currentMsgIdx = (currentMsgIdx + 1) % messages.length;
-        }, 300); // Wait for fade out
+        }, 300);
       };
-
-      rotateMessage(); // Show first message immediately
-      const rotationInterval = setInterval(rotateMessage, 5000); // Rotate every 5 seconds
-
+      rotateMessage();
+      const rotationInterval = setInterval(rotateMessage, 5000);
       closeBtn.addEventListener('click', () => {
         bar.classList.add('hidden');
         localStorage.setItem('topBarDismissed', 'true');
         clearInterval(rotationInterval);
       });
-      
-      // Add a style to msgEl for transition
       msgEl.style.transition = 'opacity 0.3s ease';
     };
 
+    // Render Compare Page
+    async function renderComparePage() {
+      const items = compareState.items;
+      const emptyEl = document.getElementById('compare-empty');
+      const contentEl = document.getElementById('compare-content');
+
+      if (!items || items.length === 0) {
+        emptyEl.classList.remove('hidden');
+        contentEl.classList.add('hidden');
+        return;
+      }
+
+      emptyEl.classList.add('hidden');
+      contentEl.classList.remove('hidden');
+
+      // Fetch full product details for each to get categories, stock, description
+      try {
+        const fullProducts = await Promise.all(
+          items.map(async item => {
+            try {
+              const res = await api.get('/products/' + item._id);
+              return res.data.data || res.data;
+            } catch(e) {
+              return item; // fallback to basic data
+            }
+          })
+        );
+        
+        let headerHtml = '<div class="col-span-1"></div>';
+        let priceHtml = '';
+        let catHtml = '';
+        let stockHtml = '';
+        let descHtml = '';
+
+        for(let i=0; i<3; i++) {
+          const p = fullProducts[i];
+          if(p) {
+            headerHtml += `
+              <div class="col-span-1 relative">
+                <button onclick="removeFromCompare('${p._id}')" class="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-red-500/20 text-red-500 hover:bg-red-500 hover:text-white transition-colors flex items-center justify-center border border-red-500/30 z-10 shadow-lg">
+                  <i class="fa-solid fa-times text-sm"></i>
+                </button>
+                <div class="aspect-square rounded-2xl overflow-hidden bg-white/5 border border-white/10 mb-4 group">
+                  <img src="${getImageUrl(p.image)}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                </div>
+                <h3 class="font-bold text-lg mb-4 line-clamp-2"><a href="product.html?id=${p._id}" class="hover:text-indigo-400 transition-colors">${p.name}</a></h3>
+                <button onclick="handleCompareAddToCart('${p._id}', this)" ${p.stock === 0 ? 'disabled' : ''} class="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed font-semibold text-sm transition-all shadow-lg flex items-center justify-center gap-2">
+                  <i class="fa-solid fa-cart-plus"></i> Add to Cart
+                </button>
+              </div>
+            `;
+            
+            priceHtml += `<div class="col-span-1"><span class="text-xl font-bold text-indigo-400">${formatPrice(p.price)}</span></div>`;
+            catHtml += `<div class="col-span-1 text-white">${p.category?.name || p.category || '-'}</div>`;
+            
+            if (p.stock > 0) {
+              stockHtml += `<div class="col-span-1"><span class="px-3 py-1 rounded-full bg-green-500/15 border border-green-500/30 text-green-400 text-xs font-semibold">In Stock</span></div>`;
+            } else {
+              stockHtml += `<div class="col-span-1"><span class="px-3 py-1 rounded-full bg-red-500/15 border border-red-500/30 text-red-400 text-xs font-semibold">Out of Stock</span></div>`;
+            }
+            
+            descHtml += `<div class="col-span-1 text-sm text-white/70 leading-relaxed">${p.description ? p.description.substring(0, 150) + '...' : '-'}</div>`;
+          } else {
+            // Empty placeholder for remaining slots
+            headerHtml += `<div class="col-span-1 border-2 border-dashed border-white/10 rounded-2xl flex flex-col items-center justify-center aspect-square text-white/30"><i class="fa-solid fa-plus text-3xl mb-2"></i><span class="text-sm font-medium">Add Product</span></div>`;
+            priceHtml += `<div class="col-span-1"></div>`;
+            catHtml += `<div class="col-span-1"></div>`;
+            stockHtml += `<div class="col-span-1"></div>`;
+            descHtml += `<div class="col-span-1"></div>`;
+          }
+        }
+
+        document.getElementById('compare-header').innerHTML = headerHtml;
+        document.getElementById('row-price').innerHTML = priceHtml;
+        document.getElementById('row-category').innerHTML = catHtml;
+        document.getElementById('row-stock').innerHTML = stockHtml;
+        document.getElementById('row-desc').innerHTML = descHtml;
+
+      } catch (err) {
+        console.error("Error loading products for compare:", err);
+      }
+    }
+
+    async function handleCompareAddToCart(productId, btn) {
+      if (!isLoggedIn()) {
+        showToast('Please login to add items to cart', 'warning');
+        setTimeout(() => { window.location.href = 'login.html'; }, 1500);
+        return;
+      }
+      const original = btn.innerHTML;
+      btn.innerHTML = '<i class="fa-solid fa-spinner animate-spin"></i>';
+      btn.disabled = true;
+      try {
+        await addToCart(productId, 1);
+        showToast('Added to cart!', 'success');
+        btn.innerHTML = '<i class="fa-solid fa-check"></i> Added';
+        setTimeout(() => {
+          btn.innerHTML = original;
+          btn.disabled = false;
+        }, 2000);
+      } catch (err) {
+        showToast(err.response?.data?.message || 'Failed to add to cart', 'error');
+        btn.innerHTML = original;
+        btn.disabled = false;
+      }
+    }
+
     window.addEventListener('DOMContentLoaded', async () => {
-      if (!requireAuth()) return;
       initNotificationBar();
       updateNavbarAuth();
       await updateCartCount();
-      await renderCartPage();
+      renderComparePage();
     });
   </script>
 </body>

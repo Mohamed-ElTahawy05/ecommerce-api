@@ -1,95 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cart — ShopLux</title>
-  <meta name="description" content="Review your cart items and proceed to checkout." />
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>tailwind.config={theme:{extend:{colors:{primary:'#6366f1'},fontFamily:{sans:['Inter','sans-serif']}}}}</script>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-  <link rel="stylesheet" href="css/custom.css" />
-</head>
-<body class="bg-[#0a0a0a] text-white min-h-screen">
+import os
+import glob
+import re
 
-  <!-- ─── TOP NOTIFICATION BAR ────────────────────── -->
-  <div id="top-notification-bar" class="hidden bg-indigo-600 text-white text-sm font-medium py-2 px-4 relative z-[60] transition-all duration-300">
-    <div class="max-w-7xl mx-auto flex items-center justify-between">
-      <div class="flex-1 text-center truncate" id="notification-message">
-        <!-- Message will be injected here -->
-      </div>
-      <button id="close-notification" class="ml-4 hover:text-white/80 transition-colors" aria-label="Dismiss notification">
-        <i class="fa-solid fa-times"></i>
-      </button>
-    </div>
-  </div>
-
-  <!-- NAVBAR -->
-  <header id="navbar" class="navbar-blur fixed top-0 left-0 right-0 z-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between h-16">
-        <a href="index.html" class="flex items-center gap-2.5">
-          <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/30">
-            <i class="fa-solid fa-bolt text-sm text-white"></i>
-          </div>
-          <span class="text-lg font-bold tracking-tight">Shop<span class="text-indigo-400">Lux</span></span>
-        </a>
-        <nav class="hidden md:flex items-center gap-1">
-          <a href="index.html" class="px-4 py-2 rounded-xl text-sm text-white/60 hover:text-white hover:bg-white/5 transition-all">Home</a>
-          <a href="products.html" class="px-4 py-2 rounded-xl text-sm text-white/60 hover:text-white hover:bg-white/5 transition-all">Products</a>
-        </nav>
-        <div class="flex items-center gap-3">
-          <a href="cart.html" class="relative p-2.5 rounded-xl bg-indigo-600/20 border border-indigo-500/30 transition-all">
-            <i class="fa-solid fa-cart-shopping text-indigo-400"></i>
-            <span id="cart-count" class="hidden absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-indigo-600 text-xs font-bold flex items-center justify-center">0</span>
-          </a>
-          <div id="nav-auth" class="flex items-center gap-2"></div>
-        </div>
-      </div>
-    </div>
-  </header>
-
-  <!-- BREADCRUMB -->
-  <div class="pt-24 pb-4 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <nav class="flex items-center gap-2 text-sm text-white/40">
-      <a href="index.html" class="hover:text-white transition-colors">Home</a>
-      <i class="fa-solid fa-chevron-right text-xs"></i>
-      <span class="text-white/70">Cart</span>
-    </nav>
-  </div>
-
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
-    <h1 class="text-4xl font-black mb-8">Your Cart</h1>
-
-    <div class="flex flex-col lg:flex-row gap-8">
-      <!-- Cart Items -->
-      <div class="flex-1 min-w-0">
-        <div id="cart-items" class="space-y-4">
-          <div class="skeleton h-28 rounded-2xl"></div>
-          <div class="skeleton h-28 rounded-2xl"></div>
-          <div class="skeleton h-28 rounded-2xl"></div>
-        </div>
-      </div>
-
-      <!-- Order Summary -->
-      <div class="w-full lg:w-80 flex-shrink-0">
-        <div class="rounded-2xl bg-white/5 border border-white/10 p-6 lg:sticky lg:top-24">
-          <h2 class="font-bold text-lg mb-5">Order Summary</h2>
-          <div id="order-summary">
-            <div class="skeleton h-4 w-full rounded my-2"></div>
-            <div class="skeleton h-4 w-4/5 rounded my-2"></div>
-            <div class="skeleton h-px w-full rounded my-4"></div>
-            <div class="skeleton h-6 w-full rounded my-2"></div>
-            <div class="skeleton h-12 w-full rounded-xl mt-6"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </main>
-
-  <!-- FOOTER -->
-    <!-- ─── FOOTER ────────────────────────────────── -->
+new_footer = """  <!-- ─── FOOTER ────────────────────────────────── -->
   <footer class="border-t border-white/10 pt-16 pb-8 bg-[#0a0a0a]">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 mb-16">
@@ -171,59 +84,40 @@
         </div>
       </div>
     </div>
-  </footer>
+  </footer>"""
 
-  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-  <script src="js/api.js"></script>
-  <script src="js/auth.js"></script>
-  <script src="js/cart.js"></script>
-  <script src="js/compare.js"></script>
-  <script>
-    // ─── Top Notification Bar ──────────────────────────────────────────────────
-    const initNotificationBar = () => {
-      if (localStorage.getItem('topBarDismissed') === 'true') return;
-      
-      const bar = document.getElementById('top-notification-bar');
-      const msgEl = document.getElementById('notification-message');
-      const closeBtn = document.getElementById('close-notification');
-      
-      const messages = [
-        "🎉 Free shipping on orders over $50",
-        "✨ New arrivals every week"
-      ];
-      let currentMsgIdx = 0;
+def parse_html_files():
+    html_files = glob.glob('c:/Users/MAS/ecommerce-api/ecommerce-frontend/*.html')
+    
+    footer_pattern = re.compile(r'<!-- ─── FOOTER ────────────────────────────────── -->\s*<footer.*?>.*?</footer>', re.DOTALL)
+    simple_footer_pattern = re.compile(r'<footer.*?>.*?</footer>', re.DOTALL)
+    
+    for file in html_files:
+        with open(file, 'r', encoding='utf-8') as f:
+            content = f.read()
+            
+        if re.search(footer_pattern, content):
+            new_content = re.sub(footer_pattern, new_footer, content)
+            with open(file, 'w', encoding='utf-8') as f:
+                f.write(new_content)
+            print(f"Updated {file} (regex replacement)")
+        elif re.search(simple_footer_pattern, content):
+            new_content = re.sub(simple_footer_pattern, new_footer, content)
+            with open(file, 'w', encoding='utf-8') as f:
+                f.write(new_content)
+            print(f"Updated {file} (simple regex replacement)")
+        else:
+            # No footer found, try to insert before the last </main> or first <script> or before </body>
+            if '</main>' in content:
+                new_content = content.replace('</main>', '</main>\n\n' + new_footer)
+            elif '<script' in content:
+                new_content = content.replace('<script', '\n' + new_footer + '\n\n<script', 1)
+            else:
+                new_content = content.replace('</body>', '\n' + new_footer + '\n</body>')
+            
+            with open(file, 'w', encoding='utf-8') as f:
+                f.write(new_content)
+            print(f"Updated {file} (inserted footer)")
 
-      bar.classList.remove('hidden');
-
-      const rotateMessage = () => {
-        msgEl.style.opacity = 0;
-        setTimeout(() => {
-          msgEl.textContent = messages[currentMsgIdx];
-          msgEl.style.opacity = 1;
-          currentMsgIdx = (currentMsgIdx + 1) % messages.length;
-        }, 300); // Wait for fade out
-      };
-
-      rotateMessage(); // Show first message immediately
-      const rotationInterval = setInterval(rotateMessage, 5000); // Rotate every 5 seconds
-
-      closeBtn.addEventListener('click', () => {
-        bar.classList.add('hidden');
-        localStorage.setItem('topBarDismissed', 'true');
-        clearInterval(rotationInterval);
-      });
-      
-      // Add a style to msgEl for transition
-      msgEl.style.transition = 'opacity 0.3s ease';
-    };
-
-    window.addEventListener('DOMContentLoaded', async () => {
-      if (!requireAuth()) return;
-      initNotificationBar();
-      updateNavbarAuth();
-      await updateCartCount();
-      await renderCartPage();
-    });
-  </script>
-</body>
-</html>
+if __name__ == "__main__":
+    parse_html_files()
