@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard | ShopLux</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    :root {
+      --bg-color: #0a0a0a;
+      --sidebar-bg: #111111;
+      --card-bg: #1a1a1a;
+      --border-color: rgba(255, 255, 255, 0.1);
+      
+      --accent: #6366f1;
+      --success: #22c55e;
+      --success-bg: rgba(34, 197, 94, 0.1);
+      --warning: #f59e0b;
+      --warning-bg: rgba(245, 158, 11, 0.1);
+      --danger: #ef4444;
+      --danger-bg: rgba(239, 68, 68, 0.1);
+      --info: #3b82f6;
+      --info-bg: rgba(59, 130, 246, 0.1);
+      
+      --text-main: #ffffff;
+      --text-muted: rgba(255, 255, 255, 0.5);
+      
+      --font-ui: 'Inter', sans-serif;
+      --font-mono: 'Geist Mono', monospace;
+      
+      --transition: all 0.2s ease;
+      --sidebar-width: 250px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: var(--font-ui);
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      display: flex;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-color); }
+    ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #555; }
+
+    /* SIDEBAR */
+    .sidebar {
+      width: var(--sidebar-width);
+      background-color: var(--sidebar-bg);
+      border-right: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      height: 100vh;
+      transition: var(--transition);
+      z-index: 100;
+    }
+
+    .brand {
+      padding: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 700;
+      font-size: 1.25rem;
+      letter-spacing: -0.02em;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .brand-icon {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, var(--accent), #818cf8);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+    }
+
+    .nav-links {
+      flex: 1;
+      padding: 1.5rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0.75rem 1rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      border-radius: 8px;
+      transition: var(--transition);
+      font-weight: 500;
+      font-size: 0.95rem;
+    }
+
+    .nav-item svg { width: 18px; height: 18px; fill: currentColor; }
+
+    .nav-item:hover, .nav-item.active {
+      color: var(--text-main);
+      background-color: rgba(255,255,255,0.05);
+    }
+
+    .nav-item.active {
+      color: var(--accent);
+      background-color: rgba(99, 102, 241, 0.1);
+      position: relative;
+    }
+    
+    .nav-item.active::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 25%;
+      height: 50%;
+      width: 3px;
+      background-color: var(--accent);
+      border-radius: 0 4px 4px 0;
+    }
+
+    .user-profile {
+      padding: 1.5rem 1rem;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background-color: rgba(255,255,255,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .user-info { flex: 1; overflow: hidden; }
+    .user-name { font-size: 0.9rem; font-weight: 600; white-space: nowrap; text-overflow: ellipsis; }
+    .user-role { font-size: 0.75rem; color: var(--text-muted); }
+
+    .logout-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 0.5rem;
+      border-radius: 6px;
+      transition: var(--transition);
+    }
+
+    .logout-btn:hover { color: var(--danger); background-color: var(--danger-bg); }
+
+    /* MAIN CONTENT */
+    .main-content {
+      flex: 1;
+      margin-left: var(--sidebar-width);
+      padding: 2rem 3rem;
+      transition: var(--transition);
+    }
+
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+
+    .page-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    /* CARDS */
+    .card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.5rem;
+      position: relative;
+      overflow: hidden;
+      transition: var(--transition);
+      backdrop-filter: blur(10px);
+    }
+    
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      border-radius: 12px;
+      padding: 1px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      opacity: 0;
+      transition: var(--transition);
+      pointer-events: none;
+    }
+
+    .card:hover { transform: translateY(-2px); box-shadow: 0 10px 40px -10px rgba(0,0,0,0.5); }
+    .card:hover::before { opacity: 1; }
+
+    /* STATS */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .stat-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .stat-icon svg { width: 16px; height: 16px; fill: currentColor; }
+
+    .stat-icon.primary { background-color: rgba(99, 102, 241, 0.1); color: var(--accent); }
+    .stat-icon.success { background-color: var(--success-bg); color: var(--success); }
+    .stat-icon.warning { background-color: var(--warning-bg); color: var(--warning); }
+    .stat-icon.danger { background-color: var(--danger-bg); color: var(--danger); }
+
+    .stat-value {
+      font-family: var(--font-mono);
+      font-size: 2rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .stat-trend {
+      font-family: var(--font-ui);
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-weight: 500;
+    }
+    
+    .stat-trend.up { color: var(--success); }
+    .stat-trend.down { color: var(--danger); }
+    .stat-trend svg { width: 12px; height: 12px; fill: currentColor; }
+
+    /* CHARTS */
+    .charts-grid {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    
+    .chart-container {
+      position: relative;
+      height: 300px;
+      width: 100%;
+    }
+
+    .card-title {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+    }
+
+    /* TABLES */
+    .table-responsive { overflow-x: auto; }
+    table { width: 100%; border-collapse: separate; border-spacing: 0; }
+    th { text-align: left; padding: 1rem; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); border-bottom: 1px solid var(--border-color); }
+    td { padding: 1rem; font-size: 0.9rem; border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: middle; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background-color: rgba(255,255,255,0.02); }
+    .td-mono { font-family: var(--font-mono); }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.25rem 0.5rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: capitalize;
+    }
+
+    .status-badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; margin-right: 6px; }
+    .status-pending { background-color: var(--warning-bg); color: var(--warning); }
+    .status-pending::before { background-color: currentColor; }
+    .status-processing { background-color: var(--info-bg); color: var(--info); }
+    .status-processing::before { background-color: currentColor; }
+    .status-shipped { background-color: rgba(168, 85, 247, 0.1); color: #a855f7; }
+    .status-shipped::before { background-color: currentColor; }
+    .status-delivered { background-color: var(--success-bg); color: var(--success); }
+    .status-delivered::before { background-color: currentColor; }
+    .status-cancelled { background-color: var(--danger-bg); color: var(--danger); }
+    .status-cancelled::before { background-color: currentColor; }
+
+    .select-status {
+      background-color: transparent; border: 1px solid var(--border-color); color: var(--text-main);
+      padding: 0.25rem 1.5rem 0.25rem 0.5rem; border-radius: 6px; font-size: 0.8rem; font-family: var(--font-ui);
+      cursor: pointer; appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 0.5rem center;
+    }
+    .select-status:focus { outline: none; border-color: var(--accent); }
+    .select-status option { background-color: var(--card-bg); }
+
+    /* TOP PRODUCTS */
+    .top-products-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
+    .product-mini-card { display: flex; align-items: center; gap: 1rem; padding: 1rem; background-color: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; }
+    .product-thumb { width: 48px; height: 48px; border-radius: 6px; object-fit: cover; background-color: var(--border-color); }
+    .product-info { flex: 1; overflow: hidden; }
+    .product-name { font-size: 0.9rem; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 0.25rem; }
+    .product-price { font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-muted); }
+    .stock-badge { font-size: 0.7rem; padding: 0.1rem 0.4rem; border-radius: 4px; font-weight: 600; }
+    .stock-in { background-color: var(--success-bg); color: var(--success); }
+    .stock-low { background-color: var(--warning-bg); color: var(--warning); }
+    .stock-out { background-color: var(--danger-bg); color: var(--danger); }
+
+    /* SKELETON LOADERS */
+    @keyframes shimmer { 0% { background-position: -1000px 0; } 100% { background-position: 1000px 0; } }
+    .skeleton {
+      animation: shimmer 2s infinite linear;
+      background: linear-gradient(to right, rgba(255,255,255,0.05) 4%, rgba(255,255,255,0.1) 25%, rgba(255,255,255,0.05) 36%);
+      background-size: 1000px 100%; border-radius: 4px;
+    }
+    .skeleton-text { height: 1em; width: 50%; margin-bottom: 0.5rem; }
+    .skeleton-number { height: 2.5rem; width: 60%; margin-bottom: 0.5rem; }
+    .skeleton-img { height: 48px; width: 48px; border-radius: 6px; }
+
+    /* TOASTS */
+    .toast-container { position: fixed; bottom: 24px; right: 24px; display: flex; flex-direction: column; gap: 12px; z-index: 9999; }
+    .toast {
+      background-color: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-main);
+      padding: 12px 16px; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      display: flex; align-items: center; gap: 12px; transform: translateX(120%); transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55); min-width: 250px;
+    }
+    .toast.show { transform: translateX(0); }
+    .toast-icon { width: 20px; height: 20px; flex-shrink: 0; }
+    .toast.success .toast-icon { color: var(--success); }
+    .toast.error .toast-icon { color: var(--danger); }
+    .toast.warning .toast-icon { color: var(--warning); }
+    .toast-content { flex: 1; font-size: 0.85rem; font-weight: 500; }
+
+    /* RESPONSIVE */
+    .mobile-menu-btn { display: none; background: none; border: none; color: white; cursor: pointer; }
+    @media (max-width: 1024px) { .charts-grid { grid-template-columns: 1fr; } }
+    @media (max-width: 768px) {
+      .sidebar { transform: translateX(-100%); width: 250px; }
+      .sidebar.open { transform: translateX(0); }
+      .main-content { margin-left: 0; padding: 1.5rem; }
+      .mobile-menu-btn { display: block; margin-right: 1rem; }
+      .page-header { justify-content: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-icon">S</div>
+      <span>ShopLux Panel</span>
+    </div>
+    
+    <nav class="nav-links">
+      <a href="index.html" class="nav-item active">
+        <svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+        Dashboard
+      </a>
+      <a href="products.html" class="nav-item">
+        <svg viewBox="0 0 24 24"><path d="M21 16V8.02c0-.51-.25-.98-.67-1.2l-8-4a1.44 1.44 0 00-1.32 0l-8 4C2.59 7.04 2.34 7.51 2.34 8.02V16c0 .51.25.98.67 1.2l8 4c.2.1.42.15.66.15s.46-.05.66-.15l8-4c.42-.22.67-.69.67-1.2zM12 4.41l6.73 3.36-2.5 1.25L9.5 5.66 12 4.41zm0 15.62l-7-3.5V9.45l7 3.5v7.08zm1-8.58l-7-3.5 2.5-1.25 7 3.5-2.5 1.25z"/></svg>
+        Products
+      </a>
+      <a href="orders.html" class="nav-item">
+        <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 9h-2V7h-2v5H6v2h2v5h2v-5h2v-2z"/></svg>
+        Orders
+      </a>
+      <a href="categories.html" class="nav-item">
+        <svg viewBox="0 0 24 24"><path d="M5 16h3v3H5v-3zm9-11h-3v3h3V5zm0 11h-3v3h3v-3zm0-5.5h-3v3h3v-3zm5.5-5.5h-3v3h3v-3zm0 5.5h-3v3h3v-3zm0 5.5h-3v3h3v-3zM5 10.5h3v3H5v-3zM5 5h3v3H5V5z"/></svg>
+        Categories
+      </a>
+    </nav>
+    
+    <div class="user-profile">
+      <div class="avatar" id="sidebar-avatar">A</div>
+      <div class="user-info">
+        <div class="user-name" id="sidebar-name">Admin User</div>
+        <div class="user-role">Administrator</div>
+      </div>
+      <button class="logout-btn" onclick="logout()" title="Logout">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M13 3h-2v10h2V3zm4.83 2.17l-1.42 1.42C17.99 7.86 19 9.81 19 12c0 3.87-3.13 7-7 7s-7-3.13-7-7c0-2.19 1.01-4.14 2.58-5.42L6.17 5.17C4.23 6.82 3 9.26 3 12c0 4.97 4.03 9 9 9s9-4.03 9-9c0-2.74-1.23-5.18-3.17-6.83z"/></svg>
+      </button>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content">
+    <header class="page-header">
+      <button class="mobile-menu-btn" onclick="toggleSidebar()">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+      </button>
+      <h1 class="page-title">Dashboard</h1>
+    </header>
+
+    <!-- STATS -->
+    <section class="stats-grid">
+      <!-- Total Products -->
+      <div class="card stat-card">
+        <div class="stat-header">
+          <span>Total Products</span>
+          <div class="stat-icon primary">
+            <svg viewBox="0 0 24 24"><path d="M21 16V8.02c0-.51-.25-.98-.67-1.2l-8-4a1.44 1.44 0 00-1.32 0l-8 4C2.59 7.04 2.34 7.51 2.34 8.02V16c0 .51.25.98.67 1.2l8 4c.2.1.42.15.66.15s.46-.05.66-.15l8-4c.42-.22.67-.69.67-1.2zM12 4.41l6.73 3.36-2.5 1.25L9.5 5.66 12 4.41z"/></svg>
+          </div>
+        </div>
+        <div id="stat-products" class="stat-value skeleton skeleton-number"></div>
+        <div class="stat-trend up">
+          <svg viewBox="0 0 24 24"><path d="M4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8-8 8z"/></svg>
+          Active inventory
+        </div>
+      </div>
+
+      <!-- Total Orders -->
+      <div class="card stat-card">
+        <div class="stat-header">
+          <span>Total Orders</span>
+          <div class="stat-icon success">
+            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 9h-2V7h-2v5H6v2h2v5h2v-5h2v-2z"/></svg>
+          </div>
+        </div>
+        <div id="stat-orders" class="stat-value skeleton skeleton-number"></div>
+        <div class="stat-trend up">
+          <svg viewBox="0 0 24 24"><path d="M4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8-8 8z"/></svg>
+          All time
+        </div>
+      </div>
+
+      <!-- Revenue -->
+      <div class="card stat-card">
+        <div class="stat-header">
+          <span>Total Revenue</span>
+          <div class="stat-icon warning">
+             <svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
+          </div>
+        </div>
+        <div id="stat-revenue" class="stat-value skeleton skeleton-number"></div>
+        <div class="stat-trend up">
+          <svg viewBox="0 0 24 24"><path d="M4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8-8 8z"/></svg>
+          Confirmed
+        </div>
+      </div>
+
+      <!-- Pending Orders -->
+      <div class="card stat-card">
+        <div class="stat-header">
+          <span>Pending Orders</span>
+          <div class="stat-icon danger">
+            <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+          </div>
+        </div>
+        <div id="stat-pending" class="stat-value skeleton skeleton-number"></div>
+        <div class="stat-trend down" style="color: var(--warning)">
+          Requires action
+        </div>
+      </div>
+    </section>
+
+    <!-- CHARTS -->
+    <section class="charts-grid">
+      <div class="card">
+        <h3 class="card-title">Orders by Status</h3>
+        <div class="chart-container">
+          <canvas id="statusChart"></canvas>
+        </div>
+      </div>
+      
+      <div class="card">
+        <h3 class="card-title">Revenue (Last 7 Days)</h3>
+        <div class="chart-container">
+          <canvas id="revenueChart"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- RECENT ORDERS & TOP PRODUCTS -->
+    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+      <div class="card" style="grid-column: 1 / -1; @media(min-width:1024px){ grid-column: 1 / 2; }">
+        <h3 class="card-title">Recent Orders</h3>
+        <div class="table-responsive">
+          <table>
+            <thead>
+              <tr>
+                <th>Order ID</th>
+                <th>Customer</th>
+                <th>Items</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="recent-orders-body">
+              <tr><td colspan="6"><div class="skeleton skeleton-text" style="width:100%"></div></td></tr>
+              <tr><td colspan="6"><div class="skeleton skeleton-text" style="width:100%"></div></td></tr>
+              <tr><td colspan="6"><div class="skeleton skeleton-text" style="width:100%"></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card" style="grid-column: 1 / -1; @media(min-width:1024px){ grid-column: 2 / 3; }">
+        <h3 class="card-title">Top Products</h3>
+        <div class="top-products-grid" id="top-products-container">
+          <div class="product-mini-card">
+            <div class="skeleton skeleton-img"></div>
+            <div style="flex:1">
+              <div class="skeleton skeleton-text"></div>
+              <div class="skeleton skeleton-text" style="width:40%"></div>
+            </div>
+          </div>
+          <div class="product-mini-card">
+            <div class="skeleton skeleton-img"></div>
+            <div style="flex:1">
+              <div class="skeleton skeleton-text"></div>
+              <div class="skeleton skeleton-text" style="width:40%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div class="toast-container" id="toast-container"></div>
+  <script src="js/admin-dashboard.js"></script>
+  
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+      const user = JSON.parse(localStorage.getItem("user") || "{}");
+      if (user.name) {
+        document.getElementById("sidebar-name").textContent = user.name;
+        document.getElementById("sidebar-avatar").textContent = user.name.charAt(0).toUpperCase();
+      }
+
+      Chart.defaults.color = "rgba(255, 255, 255, 0.5)";
+      Chart.defaults.font.family = "'Inter', sans-serif";
+      Chart.defaults.borderColor = "rgba(255, 255, 255, 0.05)";
+
+      await loadDashboardData();
+      setInterval(loadDashboardData, 60000);
+    });
+
+    async function loadDashboardData() {
+      try {
+        const [productsRes, ordersRes] = await Promise.all([
+          adminFetch("/products?limit=100"), 
+          adminFetch("/orders")
+        ]);
+
+        const products = productsRes.products || [];
+        const orders = ordersRes.orders || [];
+
+        const totalProducts = productsRes.total || products.length;
+        const totalOrders = orders.length;
+        
+        let totalRevenue = 0;
+        let pendingCount = 0;
+        const statusCounts = { pending: 0, processing: 0, shipped: 0, delivered: 0, cancelled: 0 };
+        const revenueByDate = {}; 
+
+        for(let i=6; i>=0; i--) {
+          const d = new Date();
+          d.setDate(d.getDate() - i);
+          revenueByDate[d.toISOString().split("T")[0]] = 0;
+        }
+
+        orders.forEach(o => {
+          totalRevenue += (o.totalPrice || 0);
+          if (o.status === "pending") pendingCount++;
+          if (statusCounts[o.status] !== undefined) statusCounts[o.status]++;
+
+          if (o.createdAt) {
+             const d = o.createdAt.split("T")[0];
+             if(revenueByDate[d] !== undefined) revenueByDate[d] += (o.totalPrice || 0);
+          }
+        });
+
+        animateValue("stat-products", 0, totalProducts, 1000);
+        animateValue("stat-orders", 0, totalOrders, 1000);
+        animateValue("stat-pending", 0, pendingCount, 1000);
+        animateValue("stat-revenue", 0, totalRevenue, 1000, true);
+
+        renderCharts(statusCounts, revenueByDate);
+        
+        const sortedOrders = [...orders].sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+        renderRecentOrders(sortedOrders.slice(0, 10)); 
+        
+        const topProducts = [...products].sort((a,b) => (b.stock || 0) - (a.stock || 0)).slice(0, 4);
+        renderTopProducts(topProducts);
+
+      } catch (err) {
+        showToast(err.message || "Failed to load dashboard data", "error");
+      }
+    }
+
+    function renderCharts(statusCounts, revenueByDate) {
+      const ctxStatus = document.getElementById("statusChart").getContext("2d");
+      if (window.statusChartInstance) window.statusChartInstance.destroy();
+      
+      window.statusChartInstance = new Chart(ctxStatus, {
+        type: "doughnut",
+        data: {
+          labels: ["Pending", "Processing", "Shipped", "Delivered", "Cancelled"],
+          datasets: [{
+            data: [
+              statusCounts.pending, 
+              statusCounts.processing, 
+              statusCounts.shipped, 
+              statusCounts.delivered, 
+              statusCounts.cancelled
+            ],
+            backgroundColor: ["#f59e0b", "#3b82f6", "#a855f7", "#22c55e", "#ef4444"],
+            borderWidth: 0, hoverOffset: 4
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false, cutout: "75%",
+          plugins: {
+            legend: { position: "bottom", labels: { usePointStyle: true, padding: 20 } },
+            tooltip: { backgroundColor: "#1a1a1a", titleColor: "#fff", bodyColor: "rgba(255,255,255,0.8)", borderColor: "rgba(255,255,255,0.1)", borderWidth: 1, padding: 12 }
+          }
+        }
+      });
+
+      const ctxRev = document.getElementById("revenueChart").getContext("2d");
+      if (window.revChartInstance) window.revChartInstance.destroy();
+
+      const dates = Object.keys(revenueByDate);
+      const revData = Object.values(revenueByDate);
+
+      const gradient = ctxRev.createLinearGradient(0, 0, 0, 300);
+      gradient.addColorStop(0, "rgba(99, 102, 241, 0.5)");
+      gradient.addColorStop(1, "rgba(99, 102, 241, 0.0)");
+
+      window.revChartInstance = new Chart(ctxRev, {
+        type: "line",
+        data: {
+          labels: dates.map(d => {
+            const date = new Date(d);
+            return `${date.getDate()} ${date.toLocaleString("en-US", {month: "short"})}`;
+          }),
+          datasets: [{
+            label: "Revenue", data: revData, borderColor: "#6366f1", backgroundColor: gradient, borderWidth: 2, tension: 0.4, fill: true,
+            pointBackgroundColor: "#1a1a1a", pointBorderColor: "#6366f1", pointBorderWidth: 2, pointRadius: 4, pointHoverRadius: 6
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: { backgroundColor: "#1a1a1a", padding: 12, callbacks: { label: (ctx) => `$${ctx.parsed.y.toFixed(2)}` } }
+          },
+          scales: {
+            y: { beginAtZero: true, grid: { color: "rgba(255, 255, 255, 0.05)" } },
+            x: { grid: { display: false } }
+          }
+        }
+      });
+    }
+
+    function renderRecentOrders(orders) {
+      const tbody = document.getElementById("recent-orders-body");
+      tbody.innerHTML = "";
+      
+      if(orders.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-muted)">No recent orders</td></tr>';
+        return;
+      }
+
+      orders.forEach(o => {
+        const tr = document.createElement("tr");
+        let itemCount = o.orderItems ? o.orderItems.length : 0;
+
+        tr.innerHTML = `
+          <td class="td-mono">#${o._id.substring(o._id.length - 6).toUpperCase()}</td>
+          <td>${o.user ? o.user.name || o.user.email : "Guest"}</td>
+          <td>${itemCount}</td>
+          <td class="td-mono">$${(o.totalPrice || 0).toFixed(2)}</td>
+          <td><span class="status-badge status-${o.status}">${o.status}</span></td>
+          <td>
+            <select class="select-status" onchange="updateOrderStatus('${o._id}', this.value)" style="width: 120px;">
+              <option value="pending" ${o.status==="pending"?"selected":""}>Pending</option>
+              <option value="processing" ${o.status==="processing"?"selected":""}>Processing</option>
+              <option value="shipped" ${o.status==="shipped"?"selected":""}>Shipped</option>
+              <option value="delivered" ${o.status==="delivered"?"selected":""}>Delivered</option>
+              <option value="cancelled" ${o.status==="cancelled"?"selected":""}>Cancelled</option>
+            </select>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function renderTopProducts(products) {
+      const container = document.getElementById("top-products-container");
+      container.innerHTML = "";
+
+      if(products.length === 0) {
+        container.innerHTML = '<div style="color:var(--text-muted)">No products found</div>';
+        return;
+      }
+
+      products.forEach(p => {
+        let stockClass = "stock-out";
+        if(p.stock > 10) stockClass = "stock-in";
+        else if (p.stock > 0) stockClass = "stock-low";
+
+        const div = document.createElement("div");
+        div.className = "product-mini-card";
+        const imgSrc = p.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(p.name)}&background=1a1a1a&color=fff&size=48`;
+        
+        div.innerHTML = `
+          <img src="${imgSrc}" class="product-thumb" alt="${p.name}">
+          <div class="product-info">
+            <div class="product-name" title="${p.name}">${p.name}</div>
+            <div class="product-price">$${(p.price || 0).toFixed(2)}</div>
+          </div>
+          <div class="stock-badge ${stockClass}">${p.stock} in stock</div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    async function updateOrderStatus(id, status) {
+      try {
+        await adminFetch(`/orders/${id}/status`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ status })
+        });
+        showToast(`Order status updated to ${status}`);
+        loadDashboardData(); 
+      } catch (err) {
+        showToast(err.message, "error");
+        loadDashboardData(); 
+      }
+    }
+
+    function toggleSidebar() { document.getElementById("sidebar").classList.toggle("open"); }
+
+    function animateValue(id, start, end, duration, isCurrency = false) {
+      const obj = document.getElementById(id);
+      obj.classList.remove("skeleton", "skeleton-number"); 
+
+      let startTimestamp = null;
+      const step = (timestamp) => {
+        if (!startTimestamp) startTimestamp = timestamp;
+        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+        let current = Math.floor(progress * (end - start) + start);
+        
+        if (isCurrency) {
+           obj.innerHTML = "$" + (progress * (end - start) + start).toFixed(2);
+        } else {
+           obj.innerHTML = current.toLocaleString();
+        }
+
+        if (progress < 1) {
+          window.requestAnimationFrame(step);
+        } else {
+          obj.innerHTML = isCurrency ? "$" + end.toFixed(2) : end.toLocaleString();
+        }
+      };
+      window.requestAnimationFrame(step);
+    }
+  </script>
+</body>
+</html>

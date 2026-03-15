@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Orders | ShopLux Admin</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-color: #0a0a0a;
+      --sidebar-bg: #111111;
+      --card-bg: #1a1a1a;
+      --border-color: rgba(255, 255, 255, 0.1);
+      
+      --accent: #6366f1;
+      --accent-hover: #4f46e5;
+      
+      --success: #22c55e;
+      --success-bg: rgba(34, 197, 94, 0.1);
+      --warning: #f59e0b;
+      --warning-bg: rgba(245, 158, 11, 0.1);
+      --danger: #ef4444;
+      --danger-bg: rgba(239, 68, 68, 0.1);
+      --info: #3b82f6;
+      --info-bg: rgba(59, 130, 246, 0.1);
+      
+      --text-main: #ffffff;
+      --text-muted: rgba(255, 255, 255, 0.5);
+      
+      --font-ui: 'Inter', sans-serif;
+      --font-mono: 'Geist Mono', monospace;
+      
+      --transition: all 0.2s ease;
+      --sidebar-width: 250px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body { font-family: var(--font-ui); background-color: var(--bg-color); color: var(--text-main); display: flex; min-height: 100vh; overflow-x: hidden; }
+
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-color); }
+    ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #555; }
+
+    /* SIDEBAR */
+    .sidebar { width: var(--sidebar-width); background-color: var(--sidebar-bg); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; position: fixed; height: 100vh; transition: var(--transition); z-index: 100; }
+    .brand { padding: 1.5rem; display: flex; align-items: center; gap: 12px; font-weight: 700; font-size: 1.25rem; letter-spacing: -0.02em; border-bottom: 1px solid var(--border-color); }
+    .brand-icon { width: 32px; height: 32px; background: linear-gradient(135deg, var(--accent), #818cf8); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 800; }
+    .nav-links { flex: 1; padding: 1.5rem 1rem; display: flex; flex-direction: column; gap: 0.5rem; }
+    .nav-item { display: flex; align-items: center; gap: 12px; padding: 0.75rem 1rem; color: var(--text-muted); text-decoration: none; border-radius: 8px; transition: var(--transition); font-weight: 500; font-size: 0.95rem; }
+    .nav-item svg { width: 18px; height: 18px; fill: currentColor; }
+    .nav-item:hover, .nav-item.active { color: var(--text-main); background-color: rgba(255,255,255,0.05); }
+    .nav-item.active { color: var(--accent); background-color: rgba(99, 102, 241, 0.1); position: relative; }
+    .nav-item.active::before { content: ''; position: absolute; left: 0; top: 25%; height: 50%; width: 3px; background-color: var(--accent); border-radius: 0 4px 4px 0; }
+    .user-profile { padding: 1.5rem 1rem; border-top: 1px solid var(--border-color); display: flex; align-items: center; gap: 12px; }
+    .avatar { width: 36px; height: 36px; border-radius: 50%; background-color: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.9rem; }
+    .user-info { flex: 1; overflow: hidden; }
+    .user-name { font-size: 0.9rem; font-weight: 600; white-space: nowrap; text-overflow: ellipsis; }
+    .user-role { font-size: 0.75rem; color: var(--text-muted); }
+    .logout-btn { background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 0.5rem; border-radius: 6px; transition: var(--transition); }
+    .logout-btn:hover { color: var(--danger); background-color: var(--danger-bg); }
+
+    /* MAIN CONTENT */
+    .main-content { flex: 1; margin-left: var(--sidebar-width); padding: 2rem 3rem; transition: var(--transition); display: flex; flex-direction: column; height: 100vh; }
+    .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+    .page-title { font-size: 1.5rem; font-weight: 600; letter-spacing: -0.02em; }
+    
+    .btn { height: 40px; padding: 0 1rem; border-radius: 8px; border: none; font-size: 0.9rem; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: var(--transition); font-family: var(--font-ui); }
+    .btn-secondary { background-color: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-main); }
+    .btn-secondary:hover { border-color: var(--accent); }
+
+    /* FILTERS ROW */
+    .filters-row { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem; }
+    
+    .status-tabs { display: flex; gap: 0.5rem; overflow-x: auto; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border-color); }
+    .tab-btn { background: none; border: none; color: var(--text-muted); font-size: 0.9rem; font-weight: 500; padding: 0.5rem 1rem; cursor: pointer; border-bottom: 2px solid transparent; transition: var(--transition); white-space: nowrap; font-family: var(--font-ui); }
+    .tab-btn:hover { color: var(--text-main); }
+    .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+    .search-row { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .search-input-container { position: relative; flex: 1; min-width: 250px; }
+    .search-input-container svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-muted); width: 18px; height: 18px; }
+    .input-field { width: 100%; height: 40px; background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-main); padding: 0 1rem 0 2.5rem; font-family: var(--font-ui); font-size: 0.9rem; transition: var(--transition); }
+    .input-field:focus { outline: none; border-color: var(--accent); }
+    
+    .date-input { height: 40px; background-color: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-main); padding: 0 1rem; border-radius: 8px; font-size: 0.9rem; font-family: var(--font-ui); }
+    .date-input:focus { outline: none; border-color: var(--accent); }
+
+    /* TABLE */
+    .table-container { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; overflow: hidden; flex: 1; display: flex; flex-direction: column; }
+    .table-responsive { overflow-x: auto; flex: 1; }
+    table { width: 100%; border-collapse: collapse; text-align: left; }
+    th { padding: 1rem; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); border-bottom: 1px solid var(--border-color); background: rgba(255,255,255,0.02); }
+    td { padding: 1rem; font-size: 0.9rem; border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: middle; }
+    
+    .order-row { cursor: pointer; transition: var(--transition); }
+    .order-row:hover td { background-color: rgba(255,255,255,0.02); }
+    
+    .td-mono { font-family: var(--font-mono); }
+
+    .status-badge { display: inline-flex; align-items: center; padding: 0.25rem 0.5rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; text-transform: capitalize; }
+    .status-badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; margin-right: 6px; }
+    .status-pending { background-color: var(--warning-bg); color: var(--warning); }
+    .status-pending::before { background-color: currentColor; }
+    .status-processing { background-color: var(--info-bg); color: var(--info); }
+    .status-processing::before { background-color: currentColor; }
+    .status-shipped { background-color: rgba(168, 85, 247, 0.1); color: #a855f7; }
+    .status-shipped::before { background-color: currentColor; }
+    .status-delivered { background-color: var(--success-bg); color: var(--success); }
+    .status-delivered::before { background-color: currentColor; }
+    .status-cancelled { background-color: var(--danger-bg); color: var(--danger); }
+    .status-cancelled::before { background-color: currentColor; }
+
+    .select-status { background-color: transparent; border: 1px solid var(--border-color); color: var(--text-main); padding: 0.25rem 1.5rem 0.25rem 0.5rem; border-radius: 6px; font-size: 0.8rem; font-family: var(--font-ui); cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 0.5rem center; }
+    .select-status:focus { outline: none; border-color: var(--accent); }
+    .select-status option { background-color: var(--card-bg); }
+
+    /* EXPANDABLE ROW DETAILS */
+    .details-row { display: none; }
+    .details-row.active { display: table-row; }
+    .details-content { padding: 1.5rem; background-color: rgba(0,0,0,0.2); border-bottom: 1px solid rgba(255,255,255,0.05); }
+    
+    .order-items-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem; margin-top: 1rem; }
+    .order-item { display: flex; align-items: center; gap: 1rem; padding: 1rem; background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; }
+    .order-item-img { width: 48px; height: 48px; border-radius: 6px; object-fit: cover; background-color: var(--border-color); }
+    .order-item-info { flex: 1; }
+    .order-item-name { font-weight: 500; font-size: 0.9rem; margin-bottom: 0.25rem; }
+    .order-item-meta { color: var(--text-muted); font-size: 0.8rem; font-family: var(--font-mono); }
+
+    .details-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; }
+    .shipping-info { font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; }
+    .shipping-info strong { color: var(--text-main); }
+
+    /* SKELETON LOADERS */
+    @keyframes shimmer { 0% { background-position: -1000px 0; } 100% { background-position: 1000px 0; } }
+    .skeleton { animation: shimmer 2s infinite linear; background: linear-gradient(to right, rgba(255,255,255,0.05) 4%, rgba(255,255,255,0.1) 25%, rgba(255,255,255,0.05) 36%); background-size: 1000px 100%; border-radius: 4px; }
+    .skeleton-text { height: 1em; width: 100%; margin: 4px 0; }
+
+    /* TOASTS */
+    .toast-container { position: fixed; bottom: 24px; right: 24px; display: flex; flex-direction: column; gap: 12px; z-index: 9999; }
+    .toast { background-color: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-main); padding: 12px 16px; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: flex; align-items: center; gap: 12px; transform: translateX(120%); transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55); min-width: 250px; }
+    .toast.show { transform: translateX(0); }
+    .toast-icon { width: 20px; height: 20px; flex-shrink: 0; }
+    .toast.success .toast-icon { color: var(--success); }
+    .toast.error .toast-icon { color: var(--danger); }
+    .toast.warning .toast-icon { color: var(--warning); }
+    .toast-content { flex: 1; font-size: 0.85rem; font-weight: 500; }
+
+    @media (max-width: 768px) {
+      .sidebar { transform: translateX(-100%); width: 250px; }
+      .sidebar.open { transform: translateX(0); }
+      .main-content { margin-left: 0; padding: 1.5rem; }
+      .mobile-menu-btn { display: block; margin-right: 1rem; }
+      .page-header { justify-content: flex-start; }
+      .search-row { flex-direction: column; align-items: stretch; }
+      .search-input-container { width: 100%; }
+      .status-tabs { -webkit-overflow-scrolling: touch; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-icon">S</div>
+      <span>ShopLux Panel</span>
+    </div>
+    <nav class="nav-links">
+      <a href="index.html" class="nav-item">
+        <svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg> Dashboard
+      </a>
+      <a href="products.html" class="nav-item">
+        <svg viewBox="0 0 24 24"><path d="M21 16V8.02c0-.51-.25-.98-.67-1.2l-8-4a1.44 1.44 0 00-1.32 0l-8 4C2.59 7.04 2.34 7.51 2.34 8.02V16c0 .51.25.98.67 1.2l8 4c.2.1.42.15.66.15s.46-.05.66-.15l8-4c.42-.22.67-.69.67-1.2zM12 4.41l6.73 3.36-2.5 1.25L9.5 5.66 12 4.41zm0 15.62l-7-3.5V9.45l7 3.5v7.08zm1-8.58l-7-3.5 2.5-1.25 7 3.5-2.5 1.25z"/></svg> Products
+      </a>
+      <a href="orders.html" class="nav-item active">
+        <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 9h-2V7h-2v5H6v2h2v5h2v-5h2v-2z"/></svg> Orders
+      </a>
+      <a href="categories.html" class="nav-item">
+        <svg viewBox="0 0 24 24"><path d="M5 16h3v3H5v-3zm9-11h-3v3h3V5zm0 11h-3v3h3v-3zm0-5.5h-3v3h3v-3zm5.5-5.5h-3v3h3v-3zm0 5.5h-3v3h3v-3zm0 5.5h-3v3h3v-3zM5 10.5h3v3H5v-3zM5 5h3v3H5V5z"/></svg> Categories
+      </a>
+    </nav>
+    <div class="user-profile">
+      <div class="avatar" id="sidebar-avatar">A</div>
+      <div class="user-info">
+        <div class="user-name" id="sidebar-name">Admin User</div>
+        <div class="user-role">Administrator</div>
+      </div>
+      <button class="logout-btn" onclick="logout()" title="Logout">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M13 3h-2v10h2V3zm4.83 2.17l-1.42 1.42C17.99 7.86 19 9.81 19 12c0 3.87-3.13 7-7 7s-7-3.13-7-7c0-2.19 1.01-4.14 2.58-5.42L6.17 5.17C4.23 6.82 3 9.26 3 12c0 4.97 4.03 9 9 9s9-4.03 9-9c0-2.74-1.23-5.18-3.17-6.83z"/></svg>
+      </button>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <header class="page-header">
+      <button class="mobile-menu-btn" onclick="toggleSidebar()" style="display:none;">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+      </button>
+      <h1 class="page-title">Orders</h1>
+    </header>
+
+    <div class="filters-row">
+      <div class="status-tabs" id="status-tabs">
+        <button class="tab-btn active" data-status="">All Orders</button>
+        <button class="tab-btn" data-status="pending">Pending</button>
+        <button class="tab-btn" data-status="processing">Processing</button>
+        <button class="tab-btn" data-status="shipped">Shipped</button>
+        <button class="tab-btn" data-status="delivered">Delivered</button>
+        <button class="tab-btn" data-status="cancelled">Cancelled</button>
+      </div>
+
+      <div class="search-row">
+        <div class="search-input-container">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+          <input type="text" id="search-input" class="input-field" placeholder="Search by Order ID or Email..." onkeyup="debounceSearch()">
+        </div>
+        <div style="display: flex; gap: 0.5rem; align-items: center;">
+          <input type="date" id="date-from" class="date-input" onchange="runFilters()">
+          <span style="color: var(--text-muted)">to</span>
+          <input type="date" id="date-to" class="date-input" onchange="runFilters()">
+          <button class="btn btn-secondary" onclick="resetFilters()">Reset</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-container">
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Customer</th>
+              <th>Items</th>
+              <th>Total</th>
+              <th>Status</th>
+              <th>Date</th>
+              <th style="text-align: right;">Update Status</th>
+            </tr>
+          </thead>
+          <tbody id="orders-tbody">
+            <!-- Skeletons -->
+            <tr><td colspan="7"><div class="skeleton skeleton-text" style="height:30px"></div></td></tr>
+            <tr><td colspan="7"><div class="skeleton skeleton-text" style="height:30px"></div></td></tr>
+            <tr><td colspan="7"><div class="skeleton skeleton-text" style="height:30px"></div></td></tr>
+            <tr><td colspan="7"><div class="skeleton skeleton-text" style="height:30px"></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <div class="toast-container" id="toast-container"></div>
+  <script src="js/admin-dashboard.js"></script>
+
+  <script>
+    let currentOrders = [];
+    let currentStatusFilter = "";
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      const user = JSON.parse(localStorage.getItem("user") || "{}");
+      if (user.name) {
+        document.getElementById("sidebar-name").textContent = user.name;
+        document.getElementById("sidebar-avatar").textContent = user.name.charAt(0).toUpperCase();
+      }
+
+      setupTabs();
+      await fetchOrders();
+    });
+
+    function setupTabs() {
+      const tabs = document.querySelectorAll(".tab-btn");
+      tabs.forEach(tab => {
+        tab.addEventListener("click", (e) => {
+          tabs.forEach(t => t.classList.remove("active"));
+          e.target.classList.add("active");
+          currentStatusFilter = e.target.getAttribute("data-status");
+          runFilters();
+        });
+      });
+    }
+
+    let searchTimeout;
+    function debounceSearch() {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(runFilters, 400);
+    }
+
+    function resetFilters() {
+      document.getElementById("search-input").value = "";
+      document.getElementById("date-from").value = "";
+      document.getElementById("date-to").value = "";
+      currentStatusFilter = "";
+      document.querySelectorAll(".tab-btn").forEach(t => {
+        t.classList.remove("active");
+        if(t.getAttribute("data-status") === "") t.classList.add("active");
+      });
+      runFilters();
+    }
+
+    async function fetchOrders() {
+      renderSkeletons();
+      try {
+        const data = await adminFetch("/orders");
+        currentOrders = data.orders || [];
+        // Sort by newest first
+        currentOrders.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+        runFilters();
+      } catch (err) {
+        showToast(err.message, "error");
+        document.getElementById("orders-tbody").innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--danger)">Error loading data</td></tr>';
+      }
+    }
+
+    function runFilters() {
+      const search = document.getElementById("search-input").value.toLowerCase();
+      const dateFrom = document.getElementById("date-from").value;
+      const dateTo = document.getElementById("date-to").value;
+
+      let filtered = currentOrders.filter(o => {
+        // Status
+        if (currentStatusFilter && o.status !== currentStatusFilter) return false;
+        
+        // Search
+        if (search) {
+          const idMatch = o._id && o._id.toLowerCase().includes(search);
+          const emailMatch = o.user && o.user.email && o.user.email.toLowerCase().includes(search);
+          const nameMatch = o.user && o.user.name && o.user.name.toLowerCase().includes(search);
+          if(!idMatch && !emailMatch && !nameMatch) return false;
+        }
+
+        // Date
+        if (dateFrom || dateTo) {
+          const orderDate = new Date(o.createdAt);
+          if (dateFrom && orderDate < new Date(dateFrom)) return false;
+          if (dateTo) {
+             const dtEnd = new Date(dateTo);
+             dtEnd.setHours(23, 59, 59, 999);
+             if(orderDate > dtEnd) return false;
+          }
+        }
+
+        return true;
+      });
+
+      renderTable(filtered);
+    }
+
+    function renderSkeletons() {
+      const tbody = document.getElementById("orders-tbody");
+      tbody.innerHTML = '';
+      for(let i=0; i<6; i++) {
+        tbody.innerHTML += `<tr><td colspan="7"><div class="skeleton skeleton-text" style="height:30px"></div></td></tr>`;
+      }
+    }
+
+    function renderTable(orders) {
+      const tbody = document.getElementById("orders-tbody");
+      tbody.innerHTML = "";
+
+      if(orders.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:2rem;">No orders found</td></tr>';
+        return;
+      }
+
+      orders.forEach(o => {
+        const orderDate = new Date(o.createdAt);
+        const dateStr = orderDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+        
+        const customerString = o.user ? (o.user.name || o.user.email) : 'Guest';
+        const customerEmail = o.user && o.user.email ? o.user.email : '';
+        const itemsCount = o.orderItems ? o.orderItems.length : 0;
+        
+        let shippingInfo = "No shipping info provided.";
+        if(o.shippingAddress) {
+          shippingInfo = `${o.shippingAddress.address}, ${o.shippingAddress.city}, ${o.shippingAddress.country} ${o.shippingAddress.postalCode}`;
+        }
+
+        // Main Row
+        const tr = document.createElement("tr");
+        tr.className = "order-row";
+        tr.onclick = (e) => {
+          if(e.target.tagName === 'SELECT') return; // Don't expand when clicking dropdown
+          toggleDetails(o._id);
+        };
+        
+        tr.innerHTML = `
+          <td class="td-mono">#${o._id.substring(o._id.length - 6).toUpperCase()}</td>
+          <td>
+            <div style="font-weight: 500">${customerString}</div>
+            <div style="font-size: 0.8rem; color: var(--text-muted)">${customerEmail}</div>
+          </td>
+          <td>${itemsCount} item(s)</td>
+          <td class="td-mono" style="font-weight:600">$${(o.totalPrice || 0).toFixed(2)}</td>
+          <td><span class="status-badge status-${o.status}">${o.status}</span></td>
+          <td>${dateStr}</td>
+          <td style="text-align: right;">
+            <select class="select-status" onchange="updateOrderStatus('${o._id}', this.value)" style="width: 130px;">
+              <option value="pending" ${o.status==="pending"?"selected":""}>Pending</option>
+              <option value="processing" ${o.status==="processing"?"selected":""}>Processing</option>
+              <option value="shipped" ${o.status==="shipped"?"selected":""}>Shipped</option>
+              <option value="delivered" ${o.status==="delivered"?"selected":""}>Delivered</option>
+              <option value="cancelled" ${o.status==="cancelled"?"selected":""}>Cancelled</option>
+            </select>
+          </td>
+        `;
+
+        // Details Row
+        const detailsTr = document.createElement("tr");
+        detailsTr.className = "details-row";
+        detailsTr.id = `details-${o._id}`;
+
+        let itemsHtml = (o.orderItems || []).map(item => {
+           let imgSrc = `https://ui-avatars.com/api/?name=${encodeURIComponent(item.name)}&background=1a1a1a&color=fff&size=48`;
+           if(item.product && document.getElementById(item.product)) {
+             // Try to access product image if populated, else fallback
+           }
+           if (typeof item.product === 'object' && item.product.image) imgSrc = item.product.image;
+
+           return `
+            <div class="order-item">
+              <img src="${imgSrc}" class="order-item-img" alt="${item.name}">
+              <div class="order-item-info">
+                <div class="order-item-name">${item.name}</div>
+                <div class="order-item-meta">Qty: ${item.quantity || 1} • $${(item.price || 0).toFixed(2)}</div>
+              </div>
+            </div>
+           `;
+        }).join('');
+
+        detailsTr.innerHTML = `
+          <td colspan="7" style="padding:0; border-bottom: none;">
+            <div class="details-content">
+              <div class="details-header">
+                <div class="shipping-info">
+                  <strong>Shipping Address</strong><br>
+                  ${shippingInfo}
+                </div>
+                <div class="shipping-info" style="text-align:right">
+                  <strong>Order Notes:</strong> ${o.notes || 'None'} <br>
+                </div>
+              </div>
+              <strong style="font-size: 0.9rem;">Order Items</strong>
+              <div class="order-items-grid">
+                ${itemsHtml}
+              </div>
+            </div>
+          </td>
+        `;
+
+        tbody.appendChild(tr);
+        tbody.appendChild(detailsTr);
+      });
+    }
+
+    function toggleDetails(id) {
+      const row = document.getElementById(`details-${id}`);
+      if(row) row.classList.toggle("active");
+    }
+
+    async function updateOrderStatus(id, status) {
+      try {
+        await adminFetch(`/orders/${id}/status`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ status })
+        });
+        showToast(`Order status updated to ${status}`);
+        
+        // Update local state without full reload
+        const index = currentOrders.findIndex(o => o._id === id);
+        if(index > -1) {
+           currentOrders[index].status = status;
+           runFilters();
+        }
+      } catch (err) {
+        showToast(err.message, "error");
+        // Reset local state UI
+        runFilters();
+      }
+    }
+
+    function toggleSidebar() { document.getElementById("sidebar").classList.toggle("open"); }
+  </script>
+</body>
+</html>
