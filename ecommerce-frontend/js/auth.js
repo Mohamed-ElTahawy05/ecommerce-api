@@ -2,17 +2,17 @@
 
 async function login(email, password) {
   const res = await api.post('/auth/login', { email, password });
-  const { token, ...user } = res.data;
+  const { token, user } = res.data;
   localStorage.setItem('token', token);
-  localStorage.setItem('user', JSON.stringify(user.data || user));
+  localStorage.setItem('user', JSON.stringify(user));
   return res.data;
 }
 
 async function register(name, email, password) {
   const res = await api.post('/auth/register', { name, email, password, role: 'user' });
-  const { token, ...rest } = res.data;
+  const { token, user } = res.data;
   localStorage.setItem('token', token);
-  localStorage.setItem('user', JSON.stringify(rest.data || rest));
+  localStorage.setItem('user', JSON.stringify(user));
   return res.data;
 }
 
