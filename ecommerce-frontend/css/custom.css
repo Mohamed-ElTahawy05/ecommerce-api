@@ -233,3 +233,51 @@ input[type="range"]::-webkit-slider-thumb {
 [data-aos] {
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
+
+/* ─── RTL Support ───────────────────────────────────────────────────────────── */
+html[dir="rtl"] {
+  font-family: 'Inter', 'IBM Plex Sans Arabic', sans-serif;
+}
+
+.rtl .ms-auto { margin-right: auto; margin-left: 0; }
+.rtl .me-auto { margin-left: auto; margin-right: 0; }
+
+/* Flip common icons in RTL */
+.rtl .fa-chevron-right, 
+.rtl .fa-arrow-right,
+.rtl .fa-angle-right,
+.rtl .fa-chevron-left,
+.rtl .fa-arrow-left,
+.rtl .fa-angle-left {
+  display: inline-block;
+  transform: scaleX(-1);
+}
+
+/* Adjust absolute positioning for RTL */
+.rtl .right-0 { left: 0; right: auto; }
+.rtl .left-0 { right: 0; left: auto; }
+.rtl .right-4 { left: 1rem; right: auto; }
+.rtl .left-4 { right: 1rem; left: auto; }
+
+/* Navbar specific adjustments */
+.rtl #lang-dropdown {
+  left: 0;
+  right: auto;
+}
+
+.rtl #categories-dropdown {
+  right: 0;
+  left: auto;
+}
+
+.rtl .swiper-button-next {
+  left: 10px;
+  right: auto;
+  transform: rotate(180deg);
+}
+
+.rtl .swiper-button-prev {
+  right: 10px;
+  left: auto;
+  transform: rotate(180deg);
+}

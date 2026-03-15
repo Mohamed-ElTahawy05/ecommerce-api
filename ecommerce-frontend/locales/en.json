@@ -1,0 +1,80 @@
+{
+  "nav": {
+    "home": "Home",
+    "products": "Products",
+    "categories": "Categories",
+    "cart": "Cart",
+    "login": "Login",
+    "register": "Get Started",
+    "profile": "Profile",
+    "admin": "Admin Panel",
+    "logout": "Logout",
+    "search": "Search products..."
+  },
+  "hero": {
+    "badge": "New collection just dropped",
+    "title_pref": "Shop the",
+    "title_main": "Future",
+    "title_suff": "of Style",
+    "subtitle": "Discover curated products from premium brands. Fast shipping, easy returns, and an experience that feels effortless.",
+    "cta_primary": "Explore Products",
+    "cta_secondary": "Browse Categories",
+    "stat_products": "Products",
+    "stat_customers": "Happy Customers",
+    "stat_rating": "Avg Rating",
+    "scroll": "Scroll"
+  },
+  "sections": {
+    "categories_badge": "Browse by Type",
+    "categories_title": "Featured Categories",
+    "latest_badge": "Fresh Arrivals",
+    "latest_title": "Latest Products",
+    "view_all": "View All"
+  },
+  "offer": {
+    "badge": "🎉 Limited Time Offer",
+    "title_pre": "Up to",
+    "title_main": "50% OFF",
+    "desc": "Don't miss our biggest sale of the year. Grab your favorite items before they're gone.",
+    "cta": "Shop the Sale"
+  },
+  "newsletter": {
+    "badge": "Stay in the loop",
+    "title": "Get Exclusive Deals",
+    "desc": "Subscribe to our newsletter and get 10% off your first order.",
+    "placeholder": "Enter your email...",
+    "cta": "Subscribe"
+  },
+  "footer": {
+    "tagline": "Elevating your shopping experience with premium curated collections. Shop the future of style with seamless browsing and secure checkout.",
+    "shop": "Shop",
+    "support": "Support",
+    "company": "Company",
+    "copyright": "© 2024 ShopLux. All rights reserved.",
+    "fallback_credit": "Crafted with ♥ and lots of coffee",
+    "men": "Men",
+    "women": "Women",
+    "accessories": "Accessories",
+    "sale": "Sale",
+    "faq": "FAQ",
+    "returns": "Returns",
+    "shipping": "Shipping",
+    "contact": "Contact Us",
+    "about": "About Us",
+    "careers": "Careers",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service"
+  },
+  "product": {
+    "add_to_cart": "Add to Cart",
+    "out_of_stock": "Out of Stock",
+    "in_stock": "In Stock",
+    "added": "Added",
+    "processing": "Processing..."
+  },
+  "common": {
+    "compare": "Compare",
+    "clear_all": "Clear All",
+    "close": "Close"
+  }
+}

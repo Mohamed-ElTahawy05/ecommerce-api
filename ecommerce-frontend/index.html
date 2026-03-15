@@ -40,12 +40,12 @@
           <span class="text-lg font-bold tracking-tight">Shop<span class="text-indigo-400">Lux</span></span>
         </a>
         <nav class="hidden md:flex items-center gap-1">
-          <a href="index.html" class="px-4 py-2 rounded-xl text-sm text-white font-medium hover:bg-white/5 transition-all">Home</a>
-          <a href="products.html" class="px-4 py-2 rounded-xl text-sm text-white/60 hover:text-white hover:bg-white/5 transition-all">Products</a>
+          <a href="index.html" class="px-4 py-2 rounded-xl text-sm text-white font-medium hover:bg-white/5 transition-all" data-i18n="nav.home">Home</a>
+          <a href="products.html" class="px-4 py-2 rounded-xl text-sm text-white/60 hover:text-white hover:bg-white/5 transition-all" data-i18n="nav.products">Products</a>
           <!-- Categories dropdown populated by JS -->
           <div class="relative group">
             <button class="px-4 py-2 rounded-xl text-sm text-white/60 hover:text-white hover:bg-white/5 transition-all flex items-center gap-1.5">
-              Categories <i class="fa-solid fa-chevron-down text-xs"></i>
+              <span data-i18n="nav.categories">Categories</span> <i class="fa-solid fa-chevron-down text-xs"></i>
             </button>
             <div id="categories-dropdown" class="absolute top-full left-0 mt-2 w-48 py-2 rounded-2xl bg-[#111111] border border-white/10 shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
               <!-- populated by JS -->
@@ -53,10 +53,29 @@
           </div>
         </nav>
         <div class="flex items-center gap-3">
+          <!-- Language Switcher -->
+          <div class="relative">
+            <button id="lang-switcher-btn" class="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition-all flex items-center gap-2 group">
+              <span id="current-lang-flag" class="text-sm">🇺🇸</span>
+              <span id="current-lang-text" class="hidden lg:inline text-xs font-bold text-white/70 group-hover:text-white">English</span>
+              <i class="fa-solid fa-globe text-white/40 group-hover:text-white text-xs"></i>
+            </button>
+            <div id="lang-dropdown" class="absolute top-full right-0 mt-2 w-40 py-2 rounded-2xl bg-[#111111] border border-white/10 shadow-2xl opacity-0 invisible translate-y-2 transition-all duration-300 z-[70]">
+              <button data-lang-option="en" class="w-full flex items-center justify-between px-4 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/5 transition-colors">
+                <div class="flex items-center gap-3"><span>🇺🇸</span> English</div>
+                <i class="fa-solid fa-check text-indigo-400 text-xs hidden"></i>
+              </button>
+              <button data-lang-option="ar" class="w-full flex items-center justify-between px-4 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/5 transition-colors">
+                <div class="flex items-center gap-3"><span>🇸🇦</span> العربية</div>
+                <i class="fa-solid fa-check text-indigo-400 text-xs hidden"></i>
+              </button>
+            </div>
+          </div>
+
           <!-- Search -->
           <form id="search-form" class="hidden md:flex items-center gap-2 px-3 py-2 rounded-xl bg-white/5 border border-white/10 focus-within:border-indigo-500/50 transition-all">
             <i class="fa-solid fa-search text-white/30 text-xs"></i>
-            <input id="search-input" type="text" placeholder="Search products..." class="bg-transparent text-sm text-white placeholder-white/30 outline-none w-36 focus:w-48 transition-all duration-300" />
+            <input id="search-input" type="text" placeholder="Search products..." data-i18n="nav.search" class="bg-transparent text-sm text-white placeholder-white/30 outline-none w-36 focus:w-48 transition-all duration-300" />
           </form>
           <!-- Cart -->
           <a href="cart.html" class="relative p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition-all group">
@@ -70,9 +89,9 @@
         </div>
       </div>
       <div id="mobile-menu" class="hidden md:hidden pb-4 border-t border-white/10 mt-2 pt-4 space-y-1">
-        <a href="index.html" class="block px-4 py-2 rounded-xl text-sm text-white hover:bg-white/5">Home</a>
-        <a href="products.html" class="block px-4 py-2 rounded-xl text-sm text-white/60 hover:text-white hover:bg-white/5">Products</a>
-        <a href="cart.html" class="block px-4 py-2 rounded-xl text-sm text-white/60 hover:text-white hover:bg-white/5">Cart</a>
+        <a href="index.html" class="block px-4 py-2 rounded-xl text-sm text-white hover:bg-white/5" data-i18n="nav.home">Home</a>
+        <a href="products.html" class="block px-4 py-2 rounded-xl text-sm text-white/60 hover:text-white hover:bg-white/5" data-i18n="nav.products">Products</a>
+        <a href="cart.html" class="block px-4 py-2 rounded-xl text-sm text-white/60 hover:text-white hover:bg-white/5" data-i18n="nav.cart">Cart</a>
       </div>
     </div>
   </header>
@@ -87,21 +106,21 @@
     <div class="relative z-10 text-center px-4 sm:px-6 max-w-5xl mx-auto pt-32 pb-16">
       <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-sm font-medium mb-8" data-aos="fade-down">
         <span class="w-2 h-2 rounded-full bg-indigo-400 animate-pulse"></span>
-        New collection just dropped
+        <span data-i18n="hero.badge">New collection just dropped</span>
       </div>
       <h1 class="text-5xl sm:text-6xl md:text-8xl font-black tracking-tight leading-none mb-6" data-aos="fade-up" data-aos-delay="100">
-        Shop the
-        <span class="gradient-text text-glow block">Future</span>
-        of Style
+        <span data-i18n="hero.title_pref">Shop the</span>
+        <span class="gradient-text text-glow block" data-i18n="hero.title_main">Future</span>
+        <span data-i18n="hero.title_suff">of Style</span>
       </h1>
-      <p class="text-lg sm:text-xl text-white/50 max-w-2xl mx-auto leading-relaxed mb-12" data-aos="fade-up" data-aos-delay="200">
+      <p class="text-lg sm:text-xl text-white/50 max-w-2xl mx-auto leading-relaxed mb-12" data-aos="fade-up" data-aos-delay="200" data-i18n="hero.subtitle">
         Discover curated products from premium brands. Fast shipping, easy returns, and an experience that feels effortless.
       </p>
       <div class="flex flex-col sm:flex-row items-center justify-center gap-4" data-aos="fade-up" data-aos-delay="300">
-        <a href="products.html" class="w-full sm:w-auto flex items-center justify-center gap-3 px-8 py-4 rounded-2xl bg-indigo-600 hover:bg-indigo-500 font-bold text-base transition-all duration-300 shadow-xl shadow-indigo-500/30 hover:shadow-indigo-500/50 hover:-translate-y-0.5">
-          <span>Explore Products</span> <i class="fa-solid fa-arrow-right"></i>
+        <a href="products.html" class="w-full sm:w-auto flex items-center justify-center gap-3 px-8 py-4 rounded-2xl bg-indigo-600 hover:bg-indigo-500 font-bold text-base transition-all duration-300 shadow-xl shadow-indigo-500/30 hover:shadow-indigo-500/50 hover:-translate-y-0.5" data-i18n="hero.cta_primary">
+          Explore Products
         </a>
-        <a href="#categories" class="w-full sm:w-auto flex items-center justify-center gap-3 px-8 py-4 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/15 font-semibold text-sm transition-all hover:-translate-y-0.5">
+        <a href="#categories" class="w-full sm:w-auto flex items-center justify-center gap-3 px-8 py-4 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/15 font-semibold text-sm transition-all hover:-translate-y-0.5" data-i18n="hero.cta_secondary">
           Browse Categories
         </a>
       </div>
@@ -109,20 +128,20 @@
       <div class="grid grid-cols-3 gap-6 max-w-md mx-auto mt-20" data-aos="fade-up" data-aos-delay="400">
         <div class="text-center">
           <div class="text-3xl font-black gradient-text">500+</div>
-          <div class="text-xs text-white/40 mt-1">Products</div>
+          <div class="text-xs text-white/40 mt-1" data-i18n="hero.stat_products">Products</div>
         </div>
         <div class="text-center border-x border-white/10">
           <div class="text-3xl font-black gradient-text">10K+</div>
-          <div class="text-xs text-white/40 mt-1">Happy Customers</div>
+          <div class="text-xs text-white/40 mt-1" data-i18n="hero.stat_customers">Happy Customers</div>
         </div>
         <div class="text-center">
           <div class="text-3xl font-black gradient-text">4.9★</div>
-          <div class="text-xs text-white/40 mt-1">Avg Rating</div>
+          <div class="text-xs text-white/40 mt-1" data-i18n="hero.stat_rating">Avg Rating</div>
         </div>
       </div>
       <!-- Scroll indicator -->
       <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/20 animate-bounce">
-        <span class="text-xs">Scroll</span>
+        <span class="text-xs" data-i18n="hero.scroll">Scroll</span>
         <i class="fa-solid fa-chevron-down text-xs"></i>
       </div>
     </div>
@@ -133,8 +152,8 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between mb-12" data-aos="fade-up">
         <div>
-          <p class="text-indigo-400 text-sm font-semibold uppercase tracking-widest mb-2">Browse by Type</p>
-          <h2 class="text-4xl font-black">Featured Categories</h2>
+          <p class="text-indigo-400 text-sm font-semibold uppercase tracking-widest mb-2" data-i18n="sections.categories_badge">Browse by Type</p>
+          <h2 class="text-4xl font-black" data-i18n="sections.categories_title">Featured Categories</h2>
         </div>
       </div>
       <div id="categories-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
@@ -153,11 +172,11 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between mb-12" data-aos="fade-up">
         <div>
-          <p class="text-indigo-400 text-sm font-semibold uppercase tracking-widest mb-2">Fresh Arrivals</p>
-          <h2 class="text-4xl font-black">Latest Products</h2>
+          <p class="text-indigo-400 text-sm font-semibold uppercase tracking-widest mb-2" data-i18n="sections.latest_badge">Fresh Arrivals</p>
+          <h2 class="text-4xl font-black" data-i18n="sections.latest_title">Latest Products</h2>
         </div>
         <a href="products.html" class="hidden sm:flex items-center gap-2 text-sm text-white/50 hover:text-white transition-colors group">
-          View All <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+          <span data-i18n="sections.view_all">View All</span> <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
         </a>
       </div>
 
@@ -187,11 +206,11 @@
         <div class="hero-blob w-64 h-64 bg-indigo-500/20 -top-10 -left-10" style="animation-delay:2s"></div>
         <div class="hero-blob w-48 h-48 bg-purple-500/20 -bottom-10 -right-10" style="animation-delay:0s"></div>
         <div class="relative z-10">
-          <span class="inline-block px-4 py-1.5 rounded-full bg-white/10 border border-white/20 text-sm font-semibold mb-6">🎉 Limited Time Offer</span>
-          <h2 class="text-4xl sm:text-5xl font-black mb-4">Up to <span class="gradient-text">50% OFF</span></h2>
-          <p class="text-white/60 text-lg mb-8 max-w-md mx-auto">Don't miss our biggest sale of the year. Grab your favorite items before they're gone.</p>
-          <a href="products.html" class="inline-flex items-center gap-3 px-8 py-4 rounded-2xl bg-white text-[#0a0a0a] font-bold text-sm hover:bg-white/90 transition-all shadow-xl hover:-translate-y-0.5">
-            Shop the Sale <i class="fa-solid fa-tag"></i>
+          <span class="inline-block px-4 py-1.5 rounded-full bg-white/10 border border-white/20 text-sm font-semibold mb-6" data-i18n="offer.badge">🎉 Limited Time Offer</span>
+          <h2 class="text-4xl sm:text-5xl font-black mb-4"><span data-i18n="offer.title_pre">Up to</span> <span class="gradient-text" data-i18n="offer.title_main">50% OFF</span></h2>
+          <p class="text-white/60 text-lg mb-8 max-w-md mx-auto" data-i18n="offer.desc">Don't miss our biggest sale of the year. Grab your favorite items before they're gone.</p>
+          <a href="products.html" class="inline-flex items-center gap-3 px-8 py-4 rounded-2xl bg-white text-[#0a0a0a] font-bold text-sm hover:bg-white/90 transition-all shadow-xl hover:-translate-y-0.5" data-i18n="offer.cta">
+            Shop the Sale
           </a>
         </div>
       </div>
@@ -201,14 +220,14 @@
   <!-- ─── NEWSLETTER ────────────────────────────── -->
   <section class="py-20 border-t border-white/10">
     <div class="max-w-2xl mx-auto px-4 sm:px-6 text-center" data-aos="fade-up">
-      <p class="text-indigo-400 text-sm font-semibold uppercase tracking-widest mb-3">Stay in the loop</p>
-      <h2 class="text-4xl font-black mb-4">Get Exclusive Deals</h2>
-      <p class="text-white/50 mb-8">Subscribe to our newsletter and get 10% off your first order.</p>
+      <p class="text-indigo-400 text-sm font-semibold uppercase tracking-widest mb-3" data-i18n="newsletter.badge">Stay in the loop</p>
+      <h2 class="text-4xl font-black mb-4" data-i18n="newsletter.title">Get Exclusive Deals</h2>
+      <p class="text-white/50 mb-8" data-i18n="newsletter.desc">Subscribe to our newsletter and get 10% off your first order.</p>
       <form id="newsletter-form" class="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto">
-        <input id="newsletter-email" type="email" placeholder="Enter your email..." required
+        <input id="newsletter-email" type="email" placeholder="Enter your email..." data-i18n="newsletter.placeholder" required
           class="flex-1 px-5 py-4 rounded-xl bg-white/5 border border-white/15 focus:border-indigo-500 outline-none text-sm placeholder-white/30 input-glow transition-all" />
-        <button type="submit" class="px-6 py-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 font-semibold text-sm transition-all hover:shadow-lg hover:shadow-indigo-500/20 whitespace-nowrap">
-          Subscribe <i class="fa-solid fa-arrow-right ml-1"></i>
+        <button type="submit" class="px-6 py-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 font-semibold text-sm transition-all hover:shadow-lg hover:shadow-indigo-500/20 whitespace-nowrap" data-i18n="newsletter.cta">
+          Subscribe
         </button>
       </form>
     </div>
@@ -225,7 +244,7 @@
             </div>
             <span class="text-xl font-bold tracking-tight">Shop<span class="text-indigo-400">Lux</span></span>
           </a>
-          <p class="text-white/50 text-sm leading-relaxed max-w-sm mb-8">
+          <p class="text-white/50 text-sm leading-relaxed max-w-sm mb-8" data-i18n="footer.tagline">
             Elevating your shopping experience with premium curated collections. Shop the future of style with seamless browsing and secure checkout.
           </p>
           <div class="flex items-center gap-3">
@@ -245,38 +264,38 @@
         </div>
         
         <div>
-          <h5 class="font-bold text-base text-white mb-6">Shop</h5>
+          <h5 class="font-bold text-base text-white mb-6" data-i18n="footer.shop">Shop</h5>
           <ul class="space-y-4 text-sm text-white/50">
-            <li><a href="products.html?category=men" class="hover:text-indigo-400 transition-colors flex items-center gap-2"><i class="fa-solid fa-angle-right text-[10px] text-white/20"></i> Men</a></li>
-            <li><a href="products.html?category=women" class="hover:text-indigo-400 transition-colors flex items-center gap-2"><i class="fa-solid fa-angle-right text-[10px] text-white/20"></i> Women</a></li>
-            <li><a href="products.html?category=accessories" class="hover:text-indigo-400 transition-colors flex items-center gap-2"><i class="fa-solid fa-angle-right text-[10px] text-white/20"></i> Accessories</a></li>
-            <li><a href="products.html?discount=true" class="hover:text-indigo-400 transition-colors flex items-center gap-2"><i class="fa-solid fa-angle-right text-[10px] text-white/20"></i> Sale</a></li>
+            <li><a href="products.html?category=men" class="hover:text-indigo-400 transition-colors flex items-center gap-2"><i class="fa-solid fa-angle-right text-[10px] text-white/20"></i> <span data-i18n="footer.men">Men</span></a></li>
+            <li><a href="products.html?category=women" class="hover:text-indigo-400 transition-colors flex items-center gap-2"><i class="fa-solid fa-angle-right text-[10px] text-white/20"></i> <span data-i18n="footer.women">Women</span></a></li>
+            <li><a href="products.html?category=accessories" class="hover:text-indigo-400 transition-colors flex items-center gap-2"><i class="fa-solid fa-angle-right text-[10px] text-white/20"></i> <span data-i18n="footer.accessories">Accessories</span></a></li>
+            <li><a href="products.html?discount=true" class="hover:text-indigo-400 transition-colors flex items-center gap-2"><i class="fa-solid fa-angle-right text-[10px] text-white/20"></i> <span data-i18n="footer.sale">Sale</span></a></li>
           </ul>
         </div>
         
         <div>
-          <h5 class="font-bold text-base text-white mb-6">Support</h5>
+          <h5 class="font-bold text-base text-white mb-6" data-i18n="footer.support">Support</h5>
           <ul class="space-y-4 text-sm text-white/50">
-            <li><a href="faq.html" class="hover:text-indigo-400 transition-colors flex items-center gap-2"><i class="fa-solid fa-angle-right text-[10px] text-white/20"></i> FAQ</a></li>
-            <li><a href="#" class="hover:text-indigo-400 transition-colors flex items-center gap-2"><i class="fa-solid fa-angle-right text-[10px] text-white/20"></i> Returns</a></li>
-            <li><a href="#" class="hover:text-indigo-400 transition-colors flex items-center gap-2"><i class="fa-solid fa-angle-right text-[10px] text-white/20"></i> Shipping</a></li>
-            <li><a href="#" class="hover:text-indigo-400 transition-colors flex items-center gap-2"><i class="fa-solid fa-angle-right text-[10px] text-white/20"></i> Contact Us</a></li>
+            <li><a href="faq.html" class="hover:text-indigo-400 transition-colors flex items-center gap-2"><i class="fa-solid fa-angle-right text-[10px] text-white/20"></i> <span data-i18n="footer.faq">FAQ</span></a></li>
+            <li><a href="#" class="hover:text-indigo-400 transition-colors flex items-center gap-2"><i class="fa-solid fa-angle-right text-[10px] text-white/20"></i> <span data-i18n="footer.returns">Returns</span></a></li>
+            <li><a href="#" class="hover:text-indigo-400 transition-colors flex items-center gap-2"><i class="fa-solid fa-angle-right text-[10px] text-white/20"></i> <span data-i18n="footer.shipping">Shipping</span></a></li>
+            <li><a href="#" class="hover:text-indigo-400 transition-colors flex items-center gap-2"><i class="fa-solid fa-angle-right text-[10px] text-white/20"></i> <span data-i18n="footer.contact">Contact Us</span></a></li>
           </ul>
         </div>
         
         <div>
-          <h5 class="font-bold text-base text-white mb-6">Company</h5>
+          <h5 class="font-bold text-base text-white mb-6" data-i18n="footer.company">Company</h5>
           <ul class="space-y-4 text-sm text-white/50">
-            <li><a href="about.html" class="hover:text-indigo-400 transition-colors flex items-center gap-2"><i class="fa-solid fa-angle-right text-[10px] text-white/20"></i> About Us</a></li>
-            <li><a href="#" class="hover:text-indigo-400 transition-colors flex items-center gap-2"><i class="fa-solid fa-angle-right text-[10px] text-white/20"></i> Careers</a></li>
-            <li><a href="#" class="hover:text-indigo-400 transition-colors flex items-center gap-2"><i class="fa-solid fa-angle-right text-[10px] text-white/20"></i> Privacy Policy</a></li>
-            <li><a href="#" class="hover:text-indigo-400 transition-colors flex items-center gap-2"><i class="fa-solid fa-angle-right text-[10px] text-white/20"></i> Terms of Service</a></li>
+            <li><a href="about.html" class="hover:text-indigo-400 transition-colors flex items-center gap-2"><i class="fa-solid fa-angle-right text-[10px] text-white/20"></i> <span data-i18n="footer.about">About Us</span></a></li>
+            <li><a href="#" class="hover:text-indigo-400 transition-colors flex items-center gap-2"><i class="fa-solid fa-angle-right text-[10px] text-white/20"></i> <span data-i18n="footer.careers">Careers</span></a></li>
+            <li><a href="#" class="hover:text-indigo-400 transition-colors flex items-center gap-2"><i class="fa-solid fa-angle-right text-[10px] text-white/20"></i> <span data-i18n="footer.privacy">Privacy Policy</span></a></li>
+            <li><a href="#" class="hover:text-indigo-400 transition-colors flex items-center gap-2"><i class="fa-solid fa-angle-right text-[10px] text-white/20"></i> <span data-i18n="footer.terms">Terms of Service</span></a></li>
           </ul>
         </div>
       </div>
       
       <div class="pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-6">
-        <p class="text-white/40 text-sm">© 2024 ShopLux. All rights reserved.</p>
+        <p class="text-white/40 text-sm" data-i18n="footer.copyright">© 2024 ShopLux. All rights reserved.</p>
         <div class="flex items-center gap-3">
           <div class="h-8 px-3 rounded bg-white/5 border border-white/10 flex items-center justify-center text-white/50 hover:text-white transition-colors" title="Visa">
             <i class="fa-brands fa-cc-visa text-xl"></i>
@@ -307,6 +326,7 @@
   <script src="js/cart.js"></script>
   <script src="js/products.js"></script>
   <script src="js/compare.js"></script>
+  <script src="js/i18n.js"></script>
   <script>
     // Top Notification Bar Logic
     const initNotificationBar = () => {
